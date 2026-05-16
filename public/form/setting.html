@@ -18,15 +18,14 @@
 
         body {
             background-color: #f4f6f9;
-            color: #111111; /* เพิ่มความเข้มของสีฟอนต์หลักเพื่อ Contrast ที่ดีขึ้น */
+            color: #111111; 
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
 
-        /* โครงสร้างสำหรับการขยายขนาด (Accessibility) */
         html {
-            font-size: 16px; /* Base font size ที่อ่านง่ายขึ้น */
+            font-size: 16px; 
         }
 
         .header {
@@ -44,16 +43,18 @@
             display: flex;
             flex: 1;
             overflow: hidden;
+            flex-direction: row; /* ค่าเริ่มต้นบน PC */
         }
 
-        /* เมนูฝั่งซ้าย (Tabs) */
-        .tabs-vertical {
-            width: 130px;
+        /* เมนู (Tabs) */
+        .tabs-container {
+            width: 150px;
             background: white;
             border-right: 1px solid #ddd;
             display: flex;
             flex-direction: column;
             overflow-y: auto;
+            flex-shrink: 0;
         }
 
         .tab-btn {
@@ -61,14 +62,15 @@
             text-align: center;
             background: none;
             border: none;
-            font-size: 1.1rem; /* ขยายฟอนต์เมนูให้ผู้สูงอายุอ่านง่าย */
+            font-size: 1.1rem; 
             font-weight: 500;
             color: #555555;
             cursor: pointer;
-            border-left: 5px solid transparent; /* ขยายแถบสีให้ชัดขึ้น */
+            border-left: 5px solid transparent; 
             border-bottom: 1px solid #e0e0e0;
             transition: all 0.3s ease;
-            min-height: 60px; /* Touch target ขนาดใหญ่ (เกิน 48px) */
+            min-height: 60px; 
+            white-space: nowrap;
         }
 
         .tab-btn:focus-visible {
@@ -83,7 +85,7 @@
             background-color: #f8fff9;
         }
 
-        /* เนื้อหาฝั่งขวา */
+        /* เนื้อหา */
         .content-area {
             flex: 1;
             padding: 24px 20px;
@@ -112,40 +114,85 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ฟอร์มและ Input (มาตรฐาน WCAG) */
         .form-group {
-            margin-bottom: 24px; /* เพิ่มระยะห่างไม่ให้เกิดการกดผิดพลาด */
+            margin-bottom: 24px; 
         }
 
         .form-group label {
             display: block;
             font-size: 1.1rem;
             color: #333333;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             font-weight: 500;
         }
 
-        .form-control {
+        /* ส่วนของ Slider และ Input ตัวเลข */
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Custom Range Slider */
+        .form-range {
+            flex: 1;
+            -webkit-appearance: none;
             width: 100%;
-            padding: 14px; /* เพิ่มพื้นที่ Clickable Area */
-            border: 2px solid #cccccc; /* เส้นขอบชัดเจนขึ้นสำหรับผู้สูงอายุ */
+            height: 8px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            transition: background 0.2s;
+        }
+
+        .form-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #1DB446;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+        
+        .form-range::-webkit-slider-thumb:active {
+            transform: scale(1.15);
+        }
+
+        .form-range::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #1DB446;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .form-control {
+            width: 90px; /* ลดขนาดเพื่อให้อยู่ข้าง slider */
+            padding: 10px;
+            border: 2px solid #cccccc;
             border-radius: 8px;
-            font-size: 1.1rem; /* ฟอนต์กรอกข้อมูลใหญ่ขึ้น */
+            font-size: 1.1rem;
             color: #111;
+            text-align: center;
             transition: border-color 0.3s, box-shadow 0.3s;
-            min-height: 52px; /* มาตรฐาน Touch Target */
+            min-height: 52px; 
+            flex-shrink: 0;
         }
 
         .form-control:focus {
             outline: none;
             border-color: #1DB446;
-            box-shadow: 0 0 0 3px rgba(29, 180, 70, 0.2); /* เน้นช่องที่กำลังพิมพ์ให้ชัด (Focus indicator) */
+            box-shadow: 0 0 0 3px rgba(29, 180, 70, 0.2);
         }
 
         .hint {
             font-size: 0.95rem;
-            color: #595959; /* ปรับสีให้เข้มขึ้น ผ่านเกณฑ์ Contrast WCAG AA */
-            margin-top: 6px;
+            color: #595959; 
+            margin-top: 10px;
             display: block;
         }
 
@@ -165,16 +212,11 @@
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(3, 103, 211, 0.2);
             transition: background-color 0.3s;
-            min-height: 60px; /* ปุ่มบันทึกใหญ่พิเศษ */
+            min-height: 60px;
         }
 
         .btn-submit:active {
             background-color: #024c9e;
-        }
-
-        .btn-submit:focus-visible {
-            outline: 3px solid #ffb900;
-            outline-offset: 2px;
         }
 
         /* โหลดเดอร์ */
@@ -193,12 +235,36 @@
             border: 4px solid #f3f3f3;
             border-top: 4px solid #1DB446;
             border-radius: 50%;
-            width: 48px; /* ขยาย Loader ให้เห็นชัดเจน */
+            width: 48px; 
             height: 48px;
             animation: spin 1s linear infinite;
         }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* การปรับแต่งสำหรับอุปกรณ์มือถือและแท็บเล็ต */
+        @media (max-width: 768px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            .tabs-container {
+                width: 100%;
+                flex-direction: row;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .tab-btn {
+                flex: 1;
+                border-left: none;
+                border-bottom: 5px solid transparent;
+            }
+            .tab-btn.active {
+                border-left: none;
+                border-bottom: 5px solid #1DB446;
+            }
+        }
     </style>
 </head>
 <body>
@@ -214,7 +280,7 @@
 
     <main class="main-layout">
         
-        <nav class="tabs-vertical" role="tablist" aria-label="เมนูตั้งค่า">
+        <nav class="tabs-container" role="tablist" aria-label="เมนูตั้งค่า">
             <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="security" id="tab-security" onclick="openTab('security', this)">เขตปลอดภัย</button>
             <button class="tab-btn" role="tab" aria-selected="false" aria-controls="temp" id="tab-temp" onclick="openTab('temp', this)">อุณหภูมิ</button>
             <button class="tab-btn" role="tab" aria-selected="false" aria-controls="pulse" id="tab-pulse" onclick="openTab('pulse', this)">ชีพจร</button>
@@ -223,38 +289,58 @@
         <section class="content-area">
             <form id="settingsForm">
                 
+                <!-- แท็บเขตปลอดภัย -->
                 <div class="form-container tab-content active" id="security" role="tabpanel" aria-labelledby="tab-security">
                     <h3 style="margin-bottom: 20px; color: #1DB446; font-size: 1.3rem;">ตั้งค่าเขตปลอดภัย</h3>
+                    
                     <div class="form-group">
                         <label for="zone1">รัศมีเขตปลอดภัยที่ 1 (เมตร)</label>
-                        <input type="number" id="zone1" class="form-control" name="zone1" placeholder="เช่น 20" aria-describedby="hint-zone1">
+                        <div class="slider-wrapper">
+                            <input type="range" id="zone1_slider" class="form-range" min="1" max="100" value="20" oninput="syncValues('zone1_slider', 'zone1_input')">
+                            <input type="number" id="zone1_input" class="form-control" name="zone1" min="1" max="100" value="20" aria-describedby="hint-zone1" oninput="syncValues('zone1_input', 'zone1_slider')">
+                        </div>
                         <span id="hint-zone1" class="hint">แจ้งเตือนระดับที่ 1 (สีส้ม)</span>
                     </div>
+
                     <div class="form-group">
                         <label for="zone2">รัศมีเขตปลอดภัยที่ 2 (เมตร)</label>
-                        <input type="number" id="zone2" class="form-control" name="zone2" placeholder="เช่น 50" aria-describedby="hint-zone2">
+                        <div class="slider-wrapper">
+                            <input type="range" id="zone2_slider" class="form-range" min="1" max="500" value="50" oninput="syncValues('zone2_slider', 'zone2_input')">
+                            <input type="number" id="zone2_input" class="form-control" name="zone2" min="1" max="500" value="50" aria-describedby="hint-zone2" oninput="syncValues('zone2_input', 'zone2_slider')">
+                        </div>
                         <span id="hint-zone2" class="hint">แจ้งเตือนระดับฉุกเฉิน (สีแดง)</span>
                     </div>
                 </div>
 
+                <!-- แท็บอุณหภูมิ -->
                 <div class="form-container tab-content" id="temp" role="tabpanel" aria-labelledby="tab-temp">
                     <h3 style="margin-bottom: 20px; color: #1DB446; font-size: 1.3rem;">ตั้งค่าอุณหภูมิ</h3>
                     <div class="form-group">
                         <label for="tempAlert">อุณหภูมิร่างกายแจ้งเตือน (°C)</label>
-                        <input type="number" step="0.1" id="tempAlert" class="form-control" name="tempAlert" placeholder="เช่น 38.5" aria-describedby="hint-temp">
+                        <div class="slider-wrapper">
+                            <input type="range" id="tempAlert_slider" class="form-range" min="35" max="42" step="0.1" value="38.5" oninput="syncValues('tempAlert_slider', 'tempAlert_input')">
+                            <input type="number" step="0.1" id="tempAlert_input" class="form-control" name="tempAlert" min="35" max="42" value="38.5" aria-describedby="hint-temp" oninput="syncValues('tempAlert_input', 'tempAlert_slider')">
+                        </div>
                         <span id="hint-temp" class="hint">หากอุณหภูมิสูงกว่าค่านี้ ระบบจะแจ้งเตือนทันที</span>
                     </div>
                 </div>
 
+                <!-- แท็บชีพจร -->
                 <div class="form-container tab-content" id="pulse" role="tabpanel" aria-labelledby="tab-pulse">
                     <h3 style="margin-bottom: 20px; color: #1DB446; font-size: 1.3rem;">ตั้งค่าชีพจร</h3>
                     <div class="form-group">
                         <label for="pulseMax">อัตราชีพจรแจ้งเตือนสูงสุด (ครั้ง/นาที)</label>
-                        <input type="number" id="pulseMax" class="form-control" name="pulseMax" placeholder="เช่น 150">
+                        <div class="slider-wrapper">
+                            <input type="range" id="pulseMax_slider" class="form-range" min="60" max="200" value="150" oninput="syncValues('pulseMax_slider', 'pulseMax_input')">
+                            <input type="number" id="pulseMax_input" class="form-control" name="pulseMax" min="60" max="200" value="150" oninput="syncValues('pulseMax_input', 'pulseMax_slider')">
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="pulseMin">อัตราชีพจรแจ้งเตือนต่ำสุด (ครั้ง/นาที)</label>
-                        <input type="number" id="pulseMin" class="form-control" name="pulseMin" placeholder="เช่น 50">
+                        <div class="slider-wrapper">
+                            <input type="range" id="pulseMin_slider" class="form-range" min="30" max="100" value="50" oninput="syncValues('pulseMin_slider', 'pulseMin_input')">
+                            <input type="number" id="pulseMin_input" class="form-control" name="pulseMin" min="30" max="100" value="50" oninput="syncValues('pulseMin_input', 'pulseMin_slider')">
+                        </div>
                     </div>
                 </div>
 
@@ -266,18 +352,21 @@
     </main>
 
     <script>
-        // ฟังก์ชันสลับหน้าแท็บ พร้อมอัปเดตสถานะ ARIA สำหรับ Screen Reader
+        // ฟังก์ชันซิงค์ค่าระหว่าง Slider และ Input Box
+        function syncValues(sourceId, targetId) {
+            const sourceValue = document.getElementById(sourceId).value;
+            document.getElementById(targetId).value = sourceValue;
+        }
+
+        // ฟังก์ชันสลับหน้าแท็บ
         function openTab(tabId, clickedBtn) {
             const contents = document.querySelectorAll('.tab-content');
             const btns = document.querySelectorAll('.tab-btn');
             
-            contents.forEach(c => {
-                c.classList.remove('active');
-            });
-            
+            contents.forEach(c => c.classList.remove('active'));
             btns.forEach(b => {
                 b.classList.remove('active');
-                b.setAttribute('aria-selected', 'false'); // Accessibility
+                b.setAttribute('aria-selected', 'false');
             });
             
             document.getElementById(tabId).classList.add('active');
@@ -289,6 +378,7 @@
 
         async function initializeLiff() {
             try {
+                // รอการตั้งค่า LIFF หากใช้ทดสอบในคอมโดยไม่มี Liff ID ให้คอมเมนต์ 3 บรรทัดล่างออกชั่วคราวได้
                 await liff.init({ liffId: LIFF_ID });
                 if (!liff.isLoggedIn()) {
                     liff.login();
@@ -297,10 +387,13 @@
                 }
             } catch (err) {
                 console.error("LIFF Error: ", err);
-                document.getElementById('loader').style.display = 'none';
+                document.getElementById('loader').style.display = 'none'; // ปิด loader กรณีเกิด error
             }
         }
 
+        // หากยังไม่มี LIFF ID ให้แสดงหน้าเว็บขึ้นมาเลย (ลบออกได้เมื่อเชื่อม LIFF เสร็จ)
+        document.getElementById('loader').style.display = 'none';
+        
         initializeLiff();
 
         document.getElementById('settingsForm').addEventListener('submit', function(e) {
@@ -314,6 +407,7 @@
                 }
             });
 
+            // จำลองการโหลด
             setTimeout(() => {
                 Swal.fire({
                     icon: 'success',
@@ -322,7 +416,7 @@
                     confirmButtonColor: '#1DB446',
                     confirmButtonText: 'ตกลง'
                 }).then(() => {
-                    if (liff.isInClient()) {
+                    if (typeof liff !== 'undefined' && liff.isInClient()) {
                         liff.closeWindow();
                     }
                 });
