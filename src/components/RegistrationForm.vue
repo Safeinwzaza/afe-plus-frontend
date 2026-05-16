@@ -1,6 +1,16 @@
 <script setup>
 import { reactive, watch } from 'vue';
 
+// ข้อมูลจังหวัดแบ่งตาม 6 ภูมิภาคของไทย
+const regionsAndProvinces = {
+  'ภาคเหนือ': ['เชียงใหม่', 'เชียงราย', 'ลำปาง', 'ลำพูน', 'แม่ฮ่องสอน', 'น่าน', 'พะเยา', 'แพร่', 'อุตรดิตถ์'],
+  'ภาคตะวันออกเฉียงเหนือ': ['กาฬสินธุ์', 'ขอนแก่น', 'ชัยภูมิ', 'นครพนม', 'นครราชสีมา', 'บึงกาฬ', 'บุรีรัมย์', 'มหาสารคาม', 'มุกดาหาร', 'ยโสธร', 'ร้อยเอ็ด', 'เลย', 'สกลนคร', 'สุรินทร์', 'ศรีสะเกษ', 'หนองคาย', 'หนองบัวลำภู', 'อุดรธานี', 'อุบลราชธานี', 'อำนาจเจริญ'],
+  'ภาคกลาง': ['กรุงเทพมหานคร', 'กำแพงเพชร', 'ชัยนาท', 'นครนายก', 'นครปฐม', 'นครสวรรค์', 'นนทบุรี', 'ปทุมธานี', 'พระนครศรีอยุธยา', 'พิจิตร', 'พิษณุโลก', 'เพชรบูรณ์', 'ลพบุรี', 'สมุทรปราการ', 'สมุทรสงคราม', 'สมุทรสาคร', 'สิงห์บุรี', 'สุโขทัย', 'สุพรรณบุรี', 'สระบุรี', 'อ่างทอง', 'อุทัยธานี'],
+  'ภาคตะวันออก': ['จันทบุรี', 'ฉะเชิงเทรา', 'ชลบุรี', 'ตราด', 'ปราจีนบุรี', 'ระยอง', 'สระแก้ว'],
+  'ภาคตะวันตก': ['กาญจนบุรี', 'ตาก', 'ประจวบคีรีขันธ์', 'เพชรบุรี', 'ราชบุรี'],
+  'ภาคใต้': ['กระบี่', 'ชุมพร', 'ตรัง', 'นครศรีธรรมราช', 'นราธิวาส', 'ปัตตานี', 'พังงา', 'พัทลุง', 'ภูเก็ต', 'ระนอง', 'สตูล', 'สงขลา', 'สุราษฎร์ธานี', 'ยะลา']
+};
+
 const formData = reactive({
   caregiver: {
     firstName: '',
@@ -9,15 +19,14 @@ const formData = reactive({
     confirmPassword: '',
     pin: '',
     phone: '',
-    // แบ่งฟิลด์ที่อยู่เป็นสัดส่วน
     address: {
       houseNo: '',
       moo: '',
       soi: '',
       road: '',
-      subdistrict: '', // ตำบล
-      district: '',    // อำเภอ
-      province: '',    // จังหวัด
+      subdistrict: '', 
+      district: '',    
+      province: '',    
       zipcode: ''
     }
   },
@@ -30,7 +39,7 @@ const formData = reactive({
     phone: '',
     condition: '',
     medication: '',
-    useSameAddress: false, // ตัวแปรสำหรับเช็คว่าใช้ที่อยู่เดียวกับผู้ดูแลหรือไม่
+    useSameAddress: false,
     address: {
       houseNo: '',
       moo: '',
@@ -45,19 +54,17 @@ const formData = reactive({
   pdpaConsent: false
 });
 
-// ฟังก์ชัน Sync ที่อยู่หากเลือก "ใช้ที่อยู่เดียวกับผู้ดูแล"
+// Sync ที่อยู่เมื่อเลือก "ใช้ที่อยู่เดียวกับผู้ดูแล"
 watch(() => formData.dependent.useSameAddress, (isSame) => {
   if (isSame) {
     Object.assign(formData.dependent.address, formData.caregiver.address);
   } else {
-    // ล้างค่าหากกดยกเลิก
     Object.keys(formData.dependent.address).forEach(key => {
       formData.dependent.address[key] = '';
     });
   }
 });
 
-// ตรวจจับหากผู้ดูแลแก้ไขที่อยู่ ให้ฝั่งผู้มีภาวะพึ่งพิงอัปเดตตามแบบ Real-time (ถ้าติ๊กเลือกไว้)
 watch(() => formData.caregiver.address, (newAddress) => {
   if (formData.dependent.useSameAddress) {
     Object.assign(formData.dependent.address, newAddress);
@@ -69,19 +76,17 @@ const submitForm = () => {
     alert('กรุณายืนยันนโยบายความเป็นส่วนตัว');
     return;
   }
-  
   if (formData.caregiver.password !== formData.caregiver.confirmPassword) {
-    alert('รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง');
+    alert('รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน');
     return;
   }
-
   const pinRegex = /^[0-9]{4}$/;
   if (!formData.caregiver.pin || !pinRegex.test(formData.caregiver.pin)) {
     alert('รหัส PIN ต้องเป็นตัวเลข 4 หลักเท่านั้น');
     return;
   }
   
-  console.log('ข้อมูลที่เตรียมส่งเข้าระบบ AFE Plus V3:', JSON.parse(JSON.stringify(formData)));
+  console.log('ข้อมูลที่เตรียมส่ง:', JSON.parse(JSON.stringify(formData)));
   alert('บันทึกข้อมูลเรียบร้อยแล้ว');
 };
 </script>
@@ -129,11 +134,11 @@ const submitForm = () => {
 
         <div class="grid-row grid-2-col">
           <div class="input-group">
-            <label>รหัส PIN สำหรับสมาร์ทวอทช์ <span class="req">*</span></label>
+            <label>รหัส PIN (สมาร์ทวอทช์) <span class="req">*</span></label>
             <input type="password" v-model="formData.caregiver.pin" required inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="ตัวเลข 4 หลัก">
           </div>
           <div class="input-group">
-            <label>เบอร์โทรศัพท์มือถือ <span class="req">*</span></label>
+            <label>เบอร์โทรศัพท์ <span class="req">*</span></label>
             <input type="tel" v-model="formData.caregiver.phone" required inputmode="numeric" pattern="[0-9]{10}" placeholder="08XXXXXXXX">
           </div>
         </div>
@@ -145,41 +150,56 @@ const submitForm = () => {
           <div class="grid-row grid-3-col">
             <div class="input-group">
               <label>บ้านเลขที่ <span class="req">*</span></label>
-              <input type="text" v-model="formData.caregiver.address.houseNo" required placeholder="ตัวอย่าง: 123/4">
+              <input type="text" v-model="formData.caregiver.address.houseNo" required placeholder="123/4">
             </div>
             <div class="input-group">
               <label>หมู่ที่</label>
-              <input type="text" v-model="formData.caregiver.address.moo" placeholder="ตัวอย่าง: 9">
+              <input type="text" v-model="formData.caregiver.address.moo" placeholder="9">
             </div>
             <div class="input-group">
               <label>ซอย</label>
-              <input type="text" v-model="formData.caregiver.address.soi" placeholder="ระบุซอย (ถ้ามี)">
+              <input type="text" v-model="formData.caregiver.address.soi" placeholder="ระบุซอย">
             </div>
           </div>
 
           <div class="grid-row grid-3-col">
             <div class="input-group">
               <label>ถนน</label>
-              <input type="text" v-model="formData.caregiver.address.road" placeholder="ระบุถนน (ถ้ามี)">
+              <input type="text" v-model="formData.caregiver.address.road" placeholder="ระบุถนน">
             </div>
             <div class="input-group">
               <label>ตำบล / แขวง <span class="req">*</span></label>
-              <input type="text" v-model="formData.caregiver.address.subdistrict" required placeholder="ตำบล">
+              <!-- ใช้ list เพื่อจำลองการพิมพ์และมีไกด์ -->
+              <input type="text" list="subdistrict-guide" v-model="formData.caregiver.address.subdistrict" required placeholder="พิมพ์ตำบล...">
+              <datalist id="subdistrict-guide">
+                <!-- ตัวอย่างไกด์ (ของจริงสามารถใช้ API ดูดข้อมูลมาใส่ได้) -->
+                <option value="เมือง"></option>
+                <option value="บางกะปิ"></option>
+              </datalist>
             </div>
             <div class="input-group">
               <label>อำเภอ / เขต <span class="req">*</span></label>
-              <input type="text" v-model="formData.caregiver.address.district" required placeholder="อำเภอ">
+              <input type="text" list="district-guide" v-model="formData.caregiver.address.district" required placeholder="พิมพ์อำเภอ...">
+              <datalist id="district-guide">
+                <option value="เมือง"></option>
+              </datalist>
             </div>
           </div>
 
           <div class="grid-row grid-2-col">
             <div class="input-group">
-              <label>จังหวัด <span class="req">*</span></label>
-              <input type="text" v-model="formData.caregiver.address.province" required placeholder="จังหวัด">
+              <label>จังหวัด (แบ่งตามภาค) <span class="req">*</span></label>
+              <!-- Dropdown แบ่งภาค -->
+              <select v-model="formData.caregiver.address.province" required>
+                <option value="" disabled selected>-- เลือกหรือพิมพ์ค้นหาจังหวัด --</option>
+                <optgroup v-for="(provinces, regionName) in regionsAndProvinces" :key="regionName" :label="regionName">
+                  <option v-for="prov in provinces" :key="prov" :value="prov">{{ prov }}</option>
+                </optgroup>
+              </select>
             </div>
             <div class="input-group">
               <label>รหัสไปรษณีย์ <span class="req">*</span></label>
-              <input type="text" v-model="formData.caregiver.address.zipcode" required inputmode="numeric" pattern="[0-9]{5}" placeholder="ตัวเลข 5 หลัก">
+              <input type="text" v-model="formData.caregiver.address.zipcode" required inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="พิมพ์รหัส 5 หลัก">
             </div>
           </div>
         </div>
@@ -238,17 +258,6 @@ const submitForm = () => {
           </div>
         </div>
 
-        <div class="grid-row grid-2-col">
-          <div class="input-group">
-            <label>โรคประจำตัว</label>
-            <textarea v-model="formData.dependent.condition" rows="3" placeholder="ตัวอย่าง: ความดันโลหิตสูง, เบาหวาน"></textarea>
-          </div>
-          <div class="input-group">
-            <label>ยาที่ใช้ประจำ</label>
-            <textarea v-model="formData.dependent.medication" rows="3" placeholder="ตัวอย่าง: ยาลดความดัน (ทานหลังอาหารเช้า)"></textarea>
-          </div>
-        </div>
-
         <!-- Section: ที่อยู่ผู้พึ่งพิง -->
         <div class="address-section">
           <div class="address-header-flex">
@@ -281,22 +290,29 @@ const submitForm = () => {
             </div>
             <div class="input-group">
               <label>ตำบล / แขวง <span class="req">*</span></label>
-              <input type="text" v-model="formData.dependent.address.subdistrict" required :disabled="formData.dependent.useSameAddress">
+              <input type="text" list="subdistrict-guide" v-model="formData.dependent.address.subdistrict" required placeholder="พิมพ์ตำบล..." :disabled="formData.dependent.useSameAddress">
             </div>
             <div class="input-group">
               <label>อำเภอ / เขต <span class="req">*</span></label>
-              <input type="text" v-model="formData.dependent.address.district" required :disabled="formData.dependent.useSameAddress">
+              <input type="text" list="district-guide" v-model="formData.dependent.address.district" required placeholder="พิมพ์อำเภอ..." :disabled="formData.dependent.useSameAddress">
             </div>
           </div>
 
           <div class="grid-row grid-2-col">
             <div class="input-group">
               <label>จังหวัด <span class="req">*</span></label>
-              <input type="text" v-model="formData.dependent.address.province" required :disabled="formData.dependent.useSameAddress">
+              <!-- Dropdown แบ่งภาคเหมือนของผู้ดูแล -->
+              <select v-model="formData.dependent.address.province" required :disabled="formData.dependent.useSameAddress">
+                <option value="" disabled selected>-- เลือกหรือพิมพ์ค้นหาจังหวัด --</option>
+                <optgroup v-for="(provinces, regionName) in regionsAndProvinces" :key="regionName" :label="regionName">
+                  <option v-for="prov in provinces" :key="prov" :value="prov">{{ prov }}</option>
+                </optgroup>
+              </select>
             </div>
             <div class="input-group">
               <label>รหัสไปรษณีย์ <span class="req">*</span></label>
-              <input type="text" v-model="formData.dependent.address.zipcode" required inputmode="numeric" pattern="[0-9]{5}" :disabled="formData.dependent.useSameAddress">
+              <!-- ผู้ใช้สามารถกรอกเองได้อย่างอิสระ -->
+              <input type="text" v-model="formData.dependent.address.zipcode" required inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="พิมพ์รหัส 5 หลัก" :disabled="formData.dependent.useSameAddress">
             </div>
           </div>
         </div>
@@ -323,8 +339,7 @@ const submitForm = () => {
 </template>
 
 <style scoped>
-/* สไตล์เดิมที่ออกแบบมาตาม WCAG 2.2 และ Fitts's Law ยังคงไว้ครบถ้วน */
-
+/* สไตล์และ Layout ยังคงความสวยงาม จัดช่องไฟให้ใช้งานง่ายเช่นเดิม */
 .research-form-container {
     max-width: 800px;
     margin: 0 auto;
@@ -344,7 +359,6 @@ const submitForm = () => {
     font-size: 0.9rem;
     font-weight: bold;
     margin-bottom: 15px;
-    letter-spacing: 1px;
 }
 
 .form-header h1 { font-size: 1.8rem; margin: 0 0 10px 0; font-weight: 700; }
@@ -386,7 +400,7 @@ const submitForm = () => {
 .grid-row { display: grid; gap: 20px; margin-bottom: 20px; }
 .grid-1-col { grid-template-columns: 1fr; }
 .grid-2-col { grid-template-columns: 1fr 1fr; }
-.grid-3-col { grid-template-columns: 1fr 1fr 1fr; } /* เพิ่มสไตล์สำหรับที่อยู่ */
+.grid-3-col { grid-template-columns: 1fr 1fr 1fr; }
 
 /* ดีไซน์ส่วนที่อยู่ */
 .address-section {
@@ -397,11 +411,7 @@ const submitForm = () => {
     margin-top: 15px;
 }
 
-.address-section h3 {
-    margin: 0 0 20px 0;
-    font-size: 1.15rem;
-    color: #444444;
-}
+.address-section h3 { margin: 0 0 20px 0; font-size: 1.15rem; color: #444444; }
 
 .address-header-flex {
     display: flex;
@@ -411,10 +421,8 @@ const submitForm = () => {
     flex-wrap: wrap;
     gap: 10px;
 }
-
 .address-header-flex h3 { margin: 0; }
 
-/* Checkbox ให้เลือกที่อยู่เดียวกัน */
 .same-address-checkbox {
     display: inline-flex;
     align-items: center;
@@ -431,13 +439,7 @@ const submitForm = () => {
 .same-address-checkbox:hover { background-color: #C8E6C9; }
 .same-address-checkbox input { width: 18px; height: 18px; accent-color: #00B900; cursor: pointer; }
 
-.input-group label { 
-    display: block; 
-    font-size: 1.1rem; 
-    font-weight: 600; 
-    margin-bottom: 8px; 
-}
-
+.input-group label { display: block; font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
 .req { color: #E53935; font-weight: bold; }
 
 input[type="text"], input[type="tel"], input[type="password"], input[type="date"], select, textarea { 
@@ -453,6 +455,10 @@ input[type="text"], input[type="tel"], input[type="password"], input[type="date"
     color: #222222;
 }
 
+/* เพิ่มให้ optgroup ดูสวยงามเมื่อกดเปิด Select */
+select optgroup { font-weight: bold; color: #00B900; }
+select option { color: #222222; font-weight: normal; }
+
 input:focus, select:focus, textarea:focus { 
     outline: none; 
     border-color: #00B900; 
@@ -460,43 +466,24 @@ input:focus, select:focus, textarea:focus {
     box-shadow: 0 0 0 4px rgba(0, 185, 0, 0.15); 
 }
 
-/* หาก Input ถูก Disable (ตอนติ๊กใช้ที่อยู่เดียวกับผู้ดูแล) */
-input:disabled {
+input:disabled, select:disabled {
     background-color: #EEEEEE;
     color: #777777;
     cursor: not-allowed;
     border-color: #CCCCCC;
 }
 
-select { cursor: pointer; appearance: auto; }
-
 .pdpa-card { background-color: #F4FBFC; border: 1px solid #BCE3EB; }
-
 .checkbox-wrapper { display: flex; align-items: flex-start; gap: 15px; cursor: pointer; }
-.checkbox-wrapper input[type="checkbox"] { 
-    width: 24px; 
-    height: 24px; 
-    margin-top: 2px; 
-    cursor: pointer; 
-    accent-color: #00B900;
-}
+.checkbox-wrapper input[type="checkbox"] { width: 24px; height: 24px; margin-top: 2px; cursor: pointer; accent-color: #00B900; }
 .checkbox-content strong { display: block; font-size: 1.1rem; margin-bottom: 5px; color: #111; }
 .checkbox-content p { font-size: 1rem; color: #555; line-height: 1.5; margin: 0; }
 
 .form-actions { text-align: center; margin-top: 40px; }
 .btn-submit { 
-    background-color: #00B900; 
-    color: #FFFFFF; 
-    border: none; 
-    min-height: 56px; 
-    padding: 0 40px; 
-    font-size: 1.25rem; 
-    font-weight: bold; 
-    border-radius: 28px; 
-    cursor: pointer; 
-    width: 100%; 
-    max-width: 400px; 
-    box-shadow: 0 6px 12px rgba(0, 185, 0, 0.2);
+    background-color: #00B900; color: #FFFFFF; border: none; min-height: 56px; padding: 0 40px; 
+    font-size: 1.25rem; font-weight: bold; border-radius: 28px; cursor: pointer; 
+    width: 100%; max-width: 400px; box-shadow: 0 6px 12px rgba(0, 185, 0, 0.2);
     transition: transform 0.1s, background-color 0.2s; 
 }
 .btn-submit:active { transform: scale(0.98); }
