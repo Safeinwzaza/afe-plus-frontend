@@ -525,7 +525,26 @@
             document.querySelector('.content-area').scrollTop = 0;
         }
 
-        const LIFF_ID = "ใส่_LIFF_ID_ของคุณที่นี่"; // 📍 อย่าลืมนำ LIFF ID มาใส่ตรงนี้นะครับ
+        // ==========================================
+        // ดักจับ URL Parameter เพื่อเปิดแท็บอัตโนมัติตอนโหลดเว็บ
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const page = urlParams.get('page'); // อ่านค่า ?page= จาก URL
+
+            if (page === 'temp') {
+                // ถ้า URL เป็น ?page=temp ให้เปิดแท็บอุณหภูมิ
+                openTab('temp', document.getElementById('tab-temp'));
+            } else if (page === 'pulse') {
+                // ถ้า URL เป็น ?page=pulse ให้เปิดแท็บชีพจร
+                openTab('pulse', document.getElementById('tab-pulse'));
+            } else {
+                // ค่าเริ่มต้น (ถ้าเป็น ?page=security หรือไม่มี ?page)
+                openTab('security', document.getElementById('tab-security'));
+            }
+        });
+
+        const LIFF_ID = "2009959766-iBik3TTl"; // 📍 ใส่ LIFF ID เรียบร้อยแล้ว
 
         async function initializeLiff() {
             try {
@@ -541,9 +560,6 @@
                 document.getElementById('loader').style.display = 'none'; // ปิด loader กรณีเกิด error เพื่อให้ทดสอบต่อได้
             }
         }
-
-        // หากยังไม่มี LIFF ID ให้แสดงหน้าเว็บขึ้นมาเลย (สามารถลบ 2 บรรทัดนี้ออกได้เมื่อเชื่อม LIFF จริง)
-        // document.getElementById('loader').style.display = 'none';
         
         initializeLiff();
 
