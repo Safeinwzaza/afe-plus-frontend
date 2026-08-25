@@ -313,6 +313,72 @@
                 margin-top: 24px;
             }
         }
+        /* --- ส่วนเสริมสำหรับหน้าอุณหภูมิ (Dynamic UI) --- */
+#temp {
+    /* ตั้งค่าเริ่มต้นเป็นโทนเย็น (ต่ำกว่า 37.5) */
+    --dynamic-color: #0288d1; 
+    --dynamic-bg: #e1f5fe;
+    --dynamic-border: #b3e5fc;
+    --dynamic-icon: drop-shadow(0 4px 6px rgba(2, 136, 209, 0.2));
+}
+
+#temp.theme-warm {
+    /* เมื่อมีไข้ เปลี่ยนเป็นโทนร้อน (37.5 ขึ้นไป) */
+    --dynamic-color: #d32f2f; 
+    --dynamic-bg: #ffebee;
+    --dynamic-border: #ffcdd2;
+    --dynamic-icon: drop-shadow(0 4px 6px rgba(211, 47, 47, 0.2));
+}
+
+/* นำตัวแปรสีมาใช้กับการ์ดคำแนะนำ */
+.temp-status-card {
+    background: var(--dynamic-bg);
+    border: 1px solid var(--dynamic-border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 28px;
+    transition: all 0.4s ease; /* ทำให้เปลี่ยนสีแบบสมูท */
+}
+
+.temp-icon-wrapper {
+    font-size: 3.5rem;
+    filter: var(--dynamic-icon);
+    transition: all 0.4s ease;
+    animation: float 3s ease-in-out infinite; /* ให้ไอคอนขยับเบาๆ ดึงดูดสายตา */
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.temp-advice-text h4 {
+    color: var(--dynamic-color);
+    font-size: 1.2rem;
+    margin-bottom: 6px;
+    transition: color 0.4s ease;
+}
+
+.temp-advice-text p {
+    color: #4a5568;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* เปลี่ยนสี UI จุดอื่นๆ ในแท็บอุณหภูมิตาม Theme */
+#temp .value-badge {
+    background: var(--dynamic-bg);
+    color: var(--dynamic-color);
+    transition: all 0.4s ease;
+}
+
+#temp input[type=range]::-webkit-slider-thumb {
+    border-color: var(--dynamic-color);
+    transition: border-color 0.4s ease;
+}
     </style>
 </head>
 <body>
@@ -381,24 +447,35 @@
                 </div>
 
                 <!-- แท็บอุณหภูมิ -->
-                <div class="form-container" id="temp" role="tabpanel">
-                    <h3 class="form-section-title">ตั้งค่าอุณหภูมิร่างกาย</h3>
-                    <div class="form-group">
-                        <label class="form-label">
-                            แจ้งเตือนเมื่ออุณหภูมิสูงกว่า
-                            <span class="value-badge"><span id="val_tempAlert">38.5</span> °C</span>
-                        </label>
-                        <div class="control-layout">
-                            <input type="range" id="tempAlert_slider" min="35" max="42" step="0.1" value="38.5" oninput="updateValue('tempAlert', this.value)">
-                            <div class="stepper-wrapper">
-                                <button type="button" class="btn-step" onclick="stepValue('tempAlert', -0.1)" id="btn_tempAlert_minus">-</button>
-                                <input type="number" id="tempAlert_input" class="form-control-number" min="35" max="42" step="0.1" value="38.5" onchange="updateValue('tempAlert', this.value)">
-                                <button type="button" class="btn-step" onclick="stepValue('tempAlert', 0.1)" id="btn_tempAlert_plus">+</button>
-                            </div>
-                        </div>
-                        <span class="hint">ⓘ ระบบจะบันทึกสถิติและแจ้งเตือนเข้า LINE อัตโนมัติ</span>
-                    </div>
-                </div>
+<div class="form-container" id="temp" role="tabpanel">
+    <h3 class="form-section-title">ตั้งค่าอุณหภูมิร่างกาย</h3>
+    
+    <!-- การ์ดแสดงสถานะและคำแนะนำแบบ Dynamic -->
+    <div class="temp-status-card" id="temp-status-card">
+        <div class="temp-icon-wrapper" id="temp-icon-wrapper">
+            🌡️
+        </div>
+        <div class="temp-advice-text">
+            <h4 id="advice-title">อุณหภูมิปกติ</h4>
+            <p id="advice-desc">เกณฑ์ปกติของผู้สูงอายุจะอยู่ที่ 36.0 - 37.2 °C การตั้งเตือนระดับนี้จะช่วยให้พบความผิดปกติได้รวดเร็ว</p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">
+            แจ้งเตือนเมื่ออุณหภูมิสูงกว่า
+            <span class="value-badge" id="temp-badge"><span id="val_tempAlert">38.5</span> °C</span>
+        </label>
+        <div class="control-layout">
+            <input type="range" id="tempAlert_slider" min="35" max="42" step="0.1" value="38.5" oninput="updateValue('tempAlert', this.value)">
+            <div class="stepper-wrapper">
+                <button type="button" class="btn-step" onclick="stepValue('tempAlert', -0.1)" id="btn_tempAlert_minus">-</button>
+                <input type="number" id="tempAlert_input" class="form-control-number" min="35" max="42" step="0.1" value="38.5" onchange="updateValue('tempAlert', this.value)">
+                <button type="button" class="btn-step" onclick="stepValue('tempAlert', 0.1)" id="btn_tempAlert_plus">+</button>
+            </div>
+        </div>
+    </div>
+</div>
 
                 <!-- แท็บชีพจร -->
                 <div class="form-container" id="pulse" role="tabpanel">
@@ -534,6 +611,26 @@
                 });
             }, 1200); 
         });
+        // เพิ่มส่วนนี้เข้าไปในฟังก์ชัน updateValue เดิม
+if (id === 'tempAlert') {
+    const tempContainer = document.getElementById('temp');
+    const adviceTitle = document.getElementById('advice-title');
+    const adviceDesc = document.getElementById('advice-desc');
+    const iconWrapper = document.getElementById('temp-icon-wrapper');
+
+    // กำหนดเกณฑ์: ถ้าตั้งค่าตั้งแต่ 37.5 ขึ้นไป ให้เป็นโทนร้อน
+    if (numVal >= 37.5) {
+        tempContainer.classList.add('theme-warm');
+        iconWrapper.innerHTML = '🤒'; // สลับไอคอนสื่ออารมณ์
+        adviceTitle.innerText = 'เฝ้าระวังไข้สูง';
+        adviceDesc.innerText = 'การตั้งค่าระดับนี้ ระบบจะเตือนเมื่อมีความเสี่ยงภาวะไข้สูง ควรเตรียมยาลดไข้หรือติดต่อผู้เชี่ยวชาญหากจำเป็น';
+    } else {
+        tempContainer.classList.remove('theme-warm');
+        iconWrapper.innerHTML = '🌡️'; // สลับกลับเป็นไอคอนปกติ
+        adviceTitle.innerText = 'เฝ้าระวังอุณหภูมิปกติ';
+        adviceDesc.innerText = 'เกณฑ์ปกติของผู้สูงอายุจะอยู่ที่ 36.0 - 37.2 °C การตั้งระดับนี้ช่วยให้ระบบจับความผิดปกติได้ไวที่สุด';
+    }
+}
     </script>
 </body>
 </html>
