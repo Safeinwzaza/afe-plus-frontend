@@ -9,401 +9,334 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
         
+        :root {
+            --primary-color: #1DB446;
+            --primary-dark: #159135;
+            --bg-color: #f4f7f6;
+            --text-main: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-color: #e2e8f0;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: 'Kanit', sans-serif;
-            -webkit-tap-highlight-color: transparent; /* ลบสีฟ้าเวลาแตะบนมือถือ */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: #f0f3f6; /* สีพื้นหลังโทนเย็นสบายตา */
-            color: #2c3e50; 
+            background-color: var(--bg-color);
+            color: var(--text-main);
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
 
-        html {
-            font-size: 16px; 
-        }
-
-        /* --- Header: เน้นความเรียบหรู --- */
+        /* Header */
         .header {
-            background: linear-gradient(135deg, #1DB446 0%, #179138 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 20px 25px;
-            text-align: left;
-            font-size: 1.35rem;
+            padding: 18px 24px;
+            font-size: 1.3rem;
             font-weight: 600;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             display: flex;
             align-items: center;
+            z-index: 10;
         }
-        .header-icon {
-            margin-right: 12px;
-            font-size: 1.5rem;
-        }
+        .header-icon { margin-right: 12px; font-size: 1.5rem; }
 
         .main-layout {
             display: flex;
             flex: 1;
+            flex-direction: column;
             overflow: hidden;
-            flex-direction: column; /* เน้น Layout แบบแนวตั้งบนมือถือ */
         }
 
-        /* --- Tabs: ปรับปรุงให้ดูเหมือนเมนูสลับหน้า --- */
+        /* Tabs */
         .tabs-container {
-            width: 100%;
-            background: white;
-            border-bottom: 1px solid #e0e0e0;
             display: flex;
-            flex-direction: row;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            flex-shrink: 0;
-            position: sticky;
-            top: 0;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
             z-index: 9;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 16px 10px;
-            text-align: center;
+            padding: 14px 8px;
             background: none;
             border: none;
-            font-size: 1.05rem; 
+            font-size: 1rem;
             font-weight: 500;
-            color: #7f8c8d;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
             cursor: pointer;
-            border-bottom: 3px solid transparent; 
-            transition: all 0.3s ease;
-            min-height: 56px; 
-            white-space: nowrap;
-            position: relative;
+            transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-        }
-
-        .tab-btn:focus-visible {
-            outline: 2px solid #0367D3;
-            outline-offset: -3px;
+            gap: 4px;
         }
 
         .tab-btn.active {
-            color: #1DB446;
+            color: var(--primary-dark);
             font-weight: 600;
-            border-bottom-color: #1DB446;
+            border-bottom-color: var(--primary-color);
         }
+        .tab-btn .tab-icon { font-size: 1.3rem; }
 
-        .tab-btn .tab-icon {
-            font-size: 1.3rem;
-            margin-bottom: 4px;
-            transition: color 0.3s ease;
-        }
-
-        .tab-btn.active .tab-icon {
-            color: #1DB446;
-        }
-
-        /* --- Content Area: ปรับช่องว่างและเพิ่มความมน --- */
+        /* Content Area */
         .content-area {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            scroll-behavior: smooth;
         }
 
         .form-container {
             background: white;
             padding: 24px;
-            border-radius: 16px; /* ขอบโค้งมนมากขึ้น */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-            border: 1px solid #f0f0f0;
-        }
-
-        .tab-content {
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid var(--border-color);
+            margin-bottom: 80px; /* เผื่อที่ให้ปุ่ม Submit */
             display: none;
         }
-
-        .tab-content.active {
+        .form-container.active {
             display: block;
-            animation: slideInUp 0.4s ease-out;
+            animation: fadeIn 0.3s ease-out;
         }
 
-        @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(20px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- Form Elements: สวยงามและใช้งานง่าย --- */
         .form-section-title {
-            margin-bottom: 24px; 
-            color: #1DB446; 
-            font-size: 1.4rem;
+            color: var(--primary-dark);
+            font-size: 1.25rem;
             font-weight: 600;
-            position: relative;
-            padding-left: 14px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
         .form-section-title::before {
             content: '';
-            position: absolute;
-            left: 0;
-            top: 5px;
-            bottom: 5px;
             width: 4px;
-            background: #1DB446;
-            border-radius: 2px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 4px;
         }
 
+        /* Form Group & Control */
         .form-group {
-            margin-bottom: 25px; 
+            margin-bottom: 28px;
+            background: #fafcfa;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #edf2f7;
         }
 
-        .form-group label {
+        .form-label {
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 1.05rem;
-            color: #34495e;
-            margin-bottom: 12px;
             font-weight: 500;
+            margin-bottom: 16px;
         }
-        
-        .label-value-display {
+
+        .value-badge {
+            background: #e8f5e9;
+            color: var(--primary-dark);
+            padding: 4px 12px;
+            border-radius: 20px;
             font-weight: 600;
-            color: #1DB446;
-            background: #f0fff4;
-            padding: 2px 8px;
-            border-radius: 6px;
             font-size: 1rem;
         }
 
-        /* Slider Wrapper and Custom Range */
-        .slider-wrapper {
+        /* Control Layout: Slider + Stepper */
+        .control-layout {
             display: flex;
-            align-items: center;
-            gap: 15px;
-            background: #fdfdfd;
-            padding: 10px;
-            border-radius: 12px;
-            border: 1px solid #eee;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        .form-range {
-            flex: 1;
+        input[type=range] {
             -webkit-appearance: none;
             width: 100%;
             height: 6px;
-            border-radius: 3px;
-            background: #e0e0e0;
+            background: #e2e8f0;
+            border-radius: 4px;
             outline: none;
         }
-
-        .form-range::-webkit-slider-thumb {
+        input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            appearance: none;
-            width: 28px; /* ขนาดใหญ่ขึ้นเล็กน้อย */
+            width: 28px;
             height: 28px;
             border-radius: 50%;
             background: white;
-            border: 3px solid #1DB446; /* สีหลัก */
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
             cursor: pointer;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-            transition: all 0.2s ease;
-        }
-        
-        .form-range::-webkit-slider-thumb:active {
-            transform: scale(1.1);
-            background: #f0fff4;
-            box-shadow: 0 4px 8px rgba(29, 180, 70, 0.3);
         }
 
-        .form-range::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
+        /* Stepper UI */
+        .stepper-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             background: white;
-            border: 3px solid #1DB446;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .btn-step {
+            width: 50px;
+            height: 50px;
+            background: #f8fafc;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-main);
             cursor: pointer;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+        .btn-step:active { background: #e2e8f0; }
+        .btn-step:disabled { color: #cbd5e1; cursor: not-allowed; background: #f8fafc; }
 
-        /* Input Number และ Hint */
-        .form-control {
-            width: 85px; 
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            color: #2c3e50;
+        .form-control-number {
+            flex: 1;
             text-align: center;
-            transition: all 0.3s;
-            min-height: 50px; 
-            flex-shrink: 0;
-            font-weight: 500;
-        }
-
-        .form-control:focus {
+            border: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-main);
+            background: white;
+            padding: 0;
             outline: none;
-            border-color: #1DB446;
-            box-shadow: 0 0 0 3px rgba(29, 180, 70, 0.15);
-            background: #fcfdfd;
+            -moz-appearance: textfield;
+        }
+        .form-control-number::-webkit-outer-spin-button,
+        .form-control-number::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
 
         .hint {
-            font-size: 0.92rem;
-            color: #7f8c8d; 
-            margin-top: 10px;
-            display: block;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 12px;
             display: flex;
-            align-items: center;
-        }
-        .hint::before {
-            content: 'ⓘ';
-            margin-right: 6px;
-            font-size: 1rem;
-            color: #bdc3c7;
+            align-items: flex-start;
+            gap: 6px;
         }
 
-        /* Submit Button */
+        /* Submit Button (Sticky Bottom) */
         .submit-container {
-            margin-top: 15px;
-            position: sticky;
-            bottom: 20px;
-            z-index: 8;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 16px 20px;
+            background: white;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+            z-index: 20;
         }
 
         .btn-submit {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #0367D3 0%, #0257b3 100%);
+            background: var(--primary-color);
             color: white;
             border: none;
             border-radius: 12px;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 6px 12px rgba(3, 103, 211, 0.25);
-            transition: all 0.3s;
-            min-height: 60px;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-submit:active {
-            transform: translateY(1px);
-            box-shadow: 0 4px 8px rgba(3, 103, 211, 0.2);
-            background: linear-gradient(135deg, #0257b3 0%, #024c9e 100%);
-        }
-
-        /* --- Loader --- */
-        #loader {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.96);
+            box-shadow: 0 4px 10px rgba(29, 180, 70, 0.2);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            flex-direction: column;
-            backdrop-filter: blur(2px);
+            gap: 8px;
         }
+        .btn-submit:active { transform: scale(0.98); }
 
+        /* Loader */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
         .spinner {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #1DB446;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
             border-radius: 50%;
-            width: 54px; 
-            height: 54px;
+            width: 48px;
+            height: 48px;
             animation: spin 1s linear infinite;
         }
-
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- Adaptive Layout for Tablets and PCs --- */
-        @media (min-width: 769px) {
-            .main-layout {
-                flex-direction: row; /* กลับมาเป็น Layout แนวตั้งบนหน้าจอใหญ่ */
-            }
+        /* Responsive Desktop/Tablet */
+        @media (min-width: 768px) {
+            .main-layout { flex-direction: row; }
             .tabs-container {
-                width: 220px;
-                border-right: 1px solid #e0e0e0;
-                border-bottom: none;
                 flex-direction: column;
-                overflow-x: hidden;
-                overflow-y: auto;
-                position: static;
-                padding: 10px 0;
+                width: 250px;
+                box-shadow: 2px 0 5px rgba(0,0,0,0.02);
             }
             .tab-btn {
-                flex: none;
-                width: 100%;
-                text-align: left;
-                padding: 15px 25px;
+                flex-direction: row;
+                padding: 20px;
                 border-bottom: none;
                 border-left: 4px solid transparent;
-                flex-direction: row;
-                justify-content: flex-start;
-                font-size: 1.1rem;
             }
-            .tab-btn.active {
-                border-left-color: #1DB446;
-                background-color: #f0fff4;
-            }
-            .tab-btn .tab-icon {
-                margin-bottom: 0;
-                margin-right: 12px;
-                font-size: 1.4rem;
-            }
-            .content-area {
-                padding: 30px;
-            }
-            .form-container {
-                max-width: 700px;
-                margin: 0 auto 30px auto;
-            }
+            .tab-btn.active { border-left-color: var(--primary-color); background: #f0fff4; }
+            .content-area { padding: 40px; display: flex; justify-content: center; }
+            .form-container { width: 100%; max-width: 600px; margin-bottom: 0; }
             .submit-container {
-                max-width: 700px;
-                margin: 0 auto;
-                position: static;
+                position: relative;
+                box-shadow: none;
+                background: transparent;
+                padding: 0;
+                margin-top: 24px;
             }
         }
     </style>
 </head>
 <body>
 
-    <div id="loader" role="alert" aria-busy="true">
+    <div id="loader">
         <div class="spinner"></div>
-        <p style="margin-top: 18px; color: #555; font-size: 1.15rem; font-weight: 500;">กำลังเชื่อมต่อระบบ AFE PLUS...</p>
+        <p style="margin-top: 16px; font-weight: 500; color: #555;">เชื่อมต่อระบบ AFE PLUS...</p>
     </div>
 
     <header class="header">
         <span class="header-icon">⚙️</span>
-        ตั้งค่าระบบ AFE PLUS
+        ตั้งค่าระบบ
     </header>
 
     <main class="main-layout">
-        
-        <!-- Tabs with Icons -->
-        <nav class="tabs-container" role="tablist" aria-label="เมนูตั้งค่า">
-            <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="security" id="tab-security" onclick="openTab('security', this)">
-                <span class="tab-icon">🛡️</span>
-                เขตปลอดภัย
+        <nav class="tabs-container" role="tablist">
+            <button class="tab-btn active" role="tab" id="tab-security" onclick="openTab('security')">
+                <span class="tab-icon">🛡️</span> เขตปลอดภัย
             </button>
-            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="temp" id="tab-temp" onclick="openTab('temp', this)">
-                <span class="tab-icon">🤒</span>
-                อุณหภูมิ
+            <button class="tab-btn" role="tab" id="tab-temp" onclick="openTab('temp')">
+                <span class="tab-icon">🤒</span> อุณหภูมิ
             </button>
-            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="pulse" id="tab-pulse" onclick="openTab('pulse', this)">
-                <span class="tab-icon">💓</span>
-                ชีพจร
+            <button class="tab-btn" role="tab" id="tab-pulse" onclick="openTab('pulse')">
+                <span class="tab-icon">💓</span> ชีพจร
             </button>
         </nav>
 
@@ -411,78 +344,98 @@
             <form id="settingsForm">
                 
                 <!-- แท็บเขตปลอดภัย -->
-                <div class="form-container tab-content active" id="security" role="tabpanel" aria-labelledby="tab-security">
-                    <h3 class="form-section-title">ตั้งค่าเขตปลอดภัย</h3>
+                <div class="form-container active" id="security" role="tabpanel">
+                    <h3 class="form-section-title">ตั้งค่าเขตปลอดภัย (Geofence)</h3>
                     
                     <div class="form-group">
-                        <label for="zone1_input">
-                            รัศมีเขตปลอดภัยที่ 1 (เมตร)
-                            <span class="label-value-display"><span id="val_zone1">20</span> m</span>
+                        <label class="form-label">
+                            ระดับที่ 1: แจ้งเตือนปกติ
+                            <span class="value-badge"><span id="val_zone1">20</span> m</span>
                         </label>
-                        <div class="slider-wrapper">
-                            <input type="range" id="zone1_slider" class="form-range" min="1" max="100" value="20" oninput="syncValues('zone1_slider', 'zone1_input', 'val_zone1')">
-                            <input type="number" id="zone1_input" class="form-control" name="zone1" min="1" max="100" value="20" aria-describedby="hint-zone1" oninput="syncValues('zone1_input', 'zone1_slider', 'val_zone1')">
+                        <div class="control-layout">
+                            <input type="range" id="zone1_slider" min="1" max="100" step="1" value="20" oninput="updateValue('zone1', this.value)">
+                            <div class="stepper-wrapper">
+                                <button type="button" class="btn-step" onclick="stepValue('zone1', -1)" id="btn_zone1_minus">-</button>
+                                <input type="number" id="zone1_input" class="form-control-number" min="1" max="100" value="20" onchange="updateValue('zone1', this.value)">
+                                <button type="button" class="btn-step" onclick="stepValue('zone1', 1)" id="btn_zone1_plus">+</button>
+                            </div>
                         </div>
-                        <span id="hint-zone1" class="hint">แจ้งเตือนระดับที่ 1 (สีส้ม)</span>
+                        <span class="hint">ⓘ รัศมีขั้นต้น หากออกนอกบริเวณนี้ระบบจะเตือน (สีส้ม)</span>
                     </div>
 
                     <div class="form-group">
-                        <label for="zone2_input">
-                            รัศมีเขตปลอดภัยที่ 2 (เมตร)
-                            <span class="label-value-display"><span id="val_zone2">50</span> m</span>
+                        <label class="form-label">
+                            ระดับที่ 2: แจ้งเตือนฉุกเฉิน
+                            <span class="value-badge"><span id="val_zone2">50</span> m</span>
                         </label>
-                        <div class="slider-wrapper">
-                            <input type="range" id="zone2_slider" class="form-range" min="1" max="500" value="50" oninput="syncValues('zone2_slider', 'zone2_input', 'val_zone2')">
-                            <input type="number" id="zone2_input" class="form-control" name="zone2" min="1" max="500" value="50" aria-describedby="hint-zone2" oninput="syncValues('zone2_input', 'zone2_slider', 'val_zone2')">
+                        <div class="control-layout">
+                            <input type="range" id="zone2_slider" min="10" max="500" step="5" value="50" oninput="updateValue('zone2', this.value)">
+                            <div class="stepper-wrapper">
+                                <button type="button" class="btn-step" onclick="stepValue('zone2', -5)" id="btn_zone2_minus">-</button>
+                                <input type="number" id="zone2_input" class="form-control-number" min="10" max="500" value="50" onchange="updateValue('zone2', this.value)">
+                                <button type="button" class="btn-step" onclick="stepValue('zone2', 5)" id="btn_zone2_plus">+</button>
+                            </div>
                         </div>
-                        <span id="hint-zone2" class="hint">แจ้งเตือนระดับฉุกเฉิน (สีแดง)</span>
+                        <span class="hint">ⓘ รัศมีอันตราย หากออกนอกบริเวณนี้ระบบจะเตือนทันที (สีแดง)</span>
                     </div>
                 </div>
 
                 <!-- แท็บอุณหภูมิ -->
-                <div class="form-container tab-content" id="temp" role="tabpanel" aria-labelledby="tab-temp">
-                    <h3 class="form-section-title">ตั้งค่าอุณหภูมิ</h3>
+                <div class="form-container" id="temp" role="tabpanel">
+                    <h3 class="form-section-title">ตั้งค่าอุณหภูมิร่างกาย</h3>
                     <div class="form-group">
-                        <label for="tempAlert_input">
-                            อุณหภูมิร่างกายแจ้งเตือน (°C)
-                            <span class="label-value-display"><span id="val_tempAlert">38.5</span> °C</span>
+                        <label class="form-label">
+                            แจ้งเตือนเมื่ออุณหภูมิสูงกว่า
+                            <span class="value-badge"><span id="val_tempAlert">38.5</span> °C</span>
                         </label>
-                        <div class="slider-wrapper">
-                            <input type="range" id="tempAlert_slider" class="form-range" min="35" max="42" step="0.1" value="38.5" oninput="syncValues('tempAlert_slider', 'tempAlert_input', 'val_tempAlert')">
-                            <input type="number" step="0.1" id="tempAlert_input" class="form-control" name="tempAlert" min="35" max="42" value="38.5" aria-describedby="hint-temp" oninput="syncValues('tempAlert_input', 'tempAlert_slider', 'val_tempAlert')">
+                        <div class="control-layout">
+                            <input type="range" id="tempAlert_slider" min="35" max="42" step="0.1" value="38.5" oninput="updateValue('tempAlert', this.value)">
+                            <div class="stepper-wrapper">
+                                <button type="button" class="btn-step" onclick="stepValue('tempAlert', -0.1)" id="btn_tempAlert_minus">-</button>
+                                <input type="number" id="tempAlert_input" class="form-control-number" min="35" max="42" step="0.1" value="38.5" onchange="updateValue('tempAlert', this.value)">
+                                <button type="button" class="btn-step" onclick="stepValue('tempAlert', 0.1)" id="btn_tempAlert_plus">+</button>
+                            </div>
                         </div>
-                        <span id="hint-temp" class="hint">หากอุณหภูมิสูงกว่าค่านี้ ระบบจะแจ้งเตือนทันที</span>
+                        <span class="hint">ⓘ ระบบจะบันทึกสถิติและแจ้งเตือนเข้า LINE อัตโนมัติ</span>
                     </div>
                 </div>
 
                 <!-- แท็บชีพจร -->
-                <div class="form-container tab-content" id="pulse" role="tabpanel" aria-labelledby="tab-pulse">
-                    <h3 class="form-section-title">ตั้งค่าชีพจร</h3>
+                <div class="form-container" id="pulse" role="tabpanel">
+                    <h3 class="form-section-title">ตั้งค่าอัตราการเต้นของหัวใจ</h3>
                     <div class="form-group">
-                        <label for="pulseMax_input">
-                            อัตราชีพจรแจ้งเตือนสูงสุด (ครั้ง/นาที)
-                            <span class="label-value-display"><span id="val_pulseMax">150</span> bpm</span>
+                        <label class="form-label">
+                            ชีพจรแจ้งเตือน (สูงสุด)
+                            <span class="value-badge"><span id="val_pulseMax">150</span> bpm</span>
                         </label>
-                        <div class="slider-wrapper">
-                            <input type="range" id="pulseMax_slider" class="form-range" min="60" max="200" value="150" oninput="syncValues('pulseMax_slider', 'pulseMax_input', 'val_pulseMax')">
-                            <input type="number" id="pulseMax_input" class="form-control" name="pulseMax" min="60" max="200" value="150" oninput="syncValues('pulseMax_input', 'pulseMax_slider', 'val_pulseMax')">
+                        <div class="control-layout">
+                            <input type="range" id="pulseMax_slider" min="60" max="200" step="1" value="150" oninput="updateValue('pulseMax', this.value)">
+                            <div class="stepper-wrapper">
+                                <button type="button" class="btn-step" onclick="stepValue('pulseMax', -1)" id="btn_pulseMax_minus">-</button>
+                                <input type="number" id="pulseMax_input" class="form-control-number" min="60" max="200" value="150" onchange="updateValue('pulseMax', this.value)">
+                                <button type="button" class="btn-step" onclick="stepValue('pulseMax', 1)" id="btn_pulseMax_plus">+</button>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="pulseMin_input">
-                            อัตราชีพจรแจ้งเตือนต่ำสุด (ครั้ง/นาที)
-                            <span class="label-value-display"><span id="val_pulseMin">50</span> bpm</span>
+                        <label class="form-label">
+                            ชีพจรแจ้งเตือน (ต่ำสุด)
+                            <span class="value-badge"><span id="val_pulseMin">50</span> bpm</span>
                         </label>
-                        <div class="slider-wrapper">
-                            <input type="range" id="pulseMin_slider" class="form-range" min="30" max="100" value="50" oninput="syncValues('pulseMin_slider', 'pulseMin_input', 'val_pulseMin')">
-                            <input type="number" id="pulseMin_input" class="form-control" name="pulseMin" min="30" max="100" value="50" oninput="syncValues('pulseMin_input', 'pulseMin_slider', 'val_pulseMin')">
+                        <div class="control-layout">
+                            <input type="range" id="pulseMin_slider" min="30" max="100" step="1" value="50" oninput="updateValue('pulseMin', this.value)">
+                            <div class="stepper-wrapper">
+                                <button type="button" class="btn-step" onclick="stepValue('pulseMin', -1)" id="btn_pulseMin_minus">-</button>
+                                <input type="number" id="pulseMin_input" class="form-control-number" min="30" max="100" value="50" onchange="updateValue('pulseMin', this.value)">
+                                <button type="button" class="btn-step" onclick="stepValue('pulseMin', 1)" id="btn_pulseMin_plus">+</button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="submit-container">
-                    <button type="submit" class="btn-submit" aria-label="บันทึกการตั้งค่าทั้งหมด">
-                        <span style="margin-right: 8px;">💾</span> บันทึกการตั้งค่า
+                    <button type="submit" class="btn-submit">
+                        💾 บันทึกการตั้งค่า
                     </button>
                 </div>
             </form>
@@ -490,74 +443,74 @@
     </main>
 
     <script>
-        // ฟังก์ชันซิงค์ค่าระหว่าง Slider, Input Box และ Display Text
-        function syncValues(sourceId, targetId, displayId) {
-            let value = document.getElementById(sourceId).value;
+        // Core Value Manager
+        function updateValue(id, value) {
+            const input = document.getElementById(`${id}_input`);
+            const slider = document.getElementById(`${id}_slider`);
+            const display = document.getElementById(`val_${id}`);
             
-            // ตรวจสอบ min/max สำหรับช่อง input type=number
-            if (document.getElementById(targetId).type === 'number') {
-                const min = parseFloat(document.getElementById(targetId).getAttribute('min'));
-                const max = parseFloat(document.getElementById(targetId).getAttribute('max'));
-                if (value < min && sourceId.includes('input')) value = min;
-                if (value > max && sourceId.includes('input')) value = max;
-            }
+            let numVal = parseFloat(value);
+            const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
 
-            document.getElementById(targetId).value = value;
-            document.getElementById(displayId).innerText = value;
+            // Error Prevention: ป้องกันค่าหลุดขอบเขต
+            if (numVal < min) numVal = min;
+            if (numVal > max) numVal = max;
+
+            // Update UI
+            // จัดการทศนิยมเฉพาะอุณหภูมิ
+            const displayVal = input.step.includes('.') ? numVal.toFixed(1) : Math.round(numVal);
+            
+            input.value = displayVal;
+            slider.value = displayVal;
+            display.innerText = displayVal;
+
+            // Disable buttons if reach limits
+            document.getElementById(`btn_${id}_minus`).disabled = (numVal <= min);
+            document.getElementById(`btn_${id}_plus`).disabled = (numVal >= max);
         }
 
-        // ฟังก์ชันสลับหน้าแท็บ
-        function openTab(tabId, clickedBtn) {
-            const contents = document.querySelectorAll('.tab-content');
-            const btns = document.querySelectorAll('.tab-btn');
-            
-            contents.forEach(c => c.classList.remove('active'));
-            btns.forEach(b => {
-                b.classList.remove('active');
-                b.setAttribute('aria-selected', 'false');
-            });
+        // Stepper Control
+        function stepValue(id, step) {
+            const input = document.getElementById(`${id}_input`);
+            const currentValue = parseFloat(input.value);
+            updateValue(id, currentValue + step);
+        }
+
+        // Tab Navigation
+        function openTab(tabId) {
+            document.querySelectorAll('.form-container').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             
             document.getElementById(tabId).classList.add('active');
-            clickedBtn.classList.add('active');
-            clickedBtn.setAttribute('aria-selected', 'true');
-
-            // Scroll กลับไปด้านบนสุดของ content area
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            
             document.querySelector('.content-area').scrollTop = 0;
         }
 
-        // ==========================================
-        // ดักจับ URL Parameter เพื่อเปิดแท็บอัตโนมัติตอนโหลดเว็บ
-        // ==========================================
-        window.addEventListener('DOMContentLoaded', (event) => {
+        // Initialization
+        window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const page = urlParams.get('page'); // อ่านค่า ?page= จาก URL
+            const page = urlParams.get('page') || 'security';
+            if (document.getElementById(page)) openTab(page);
 
-            if (page === 'temp') {
-                // ถ้า URL เป็น ?page=temp ให้เปิดแท็บอุณหภูมิ
-                openTab('temp', document.getElementById('tab-temp'));
-            } else if (page === 'pulse') {
-                // ถ้า URL เป็น ?page=pulse ให้เปิดแท็บชีพจร
-                openTab('pulse', document.getElementById('tab-pulse'));
-            } else {
-                // ค่าเริ่มต้น (ถ้าเป็น ?page=security หรือไม่มี ?page)
-                openTab('security', document.getElementById('tab-security'));
-            }
+            // Init Button States
+            ['zone1', 'zone2', 'tempAlert', 'pulseMax', 'pulseMin'].forEach(id => {
+                updateValue(id, document.getElementById(`${id}_input`).value);
+            });
         });
 
-        const LIFF_ID = "2009959766-iBik3TTl"; // 📍 ใส่ LIFF ID เรียบร้อยแล้ว
-
+        // LIFF & Submit (ส่วนนี้คง Logic เดิมของคุณไว้เพราะทำมาดีแล้ว)
+        const LIFF_ID = "2009959766-iBik3TTl"; 
+        
         async function initializeLiff() {
             try {
-                // รอการตั้งค่า LIFF 
                 await liff.init({ liffId: LIFF_ID });
-                if (!liff.isLoggedIn()) {
-                    liff.login();
-                } else {
-                    document.getElementById('loader').style.display = 'none';
-                }
+                if (!liff.isLoggedIn()) liff.login();
+                else document.getElementById('loader').style.display = 'none';
             } catch (err) {
                 console.error("LIFF Error: ", err);
-                document.getElementById('loader').style.display = 'none'; // ปิด loader กรณีเกิด error เพื่อให้ทดสอบต่อได้
+                document.getElementById('loader').style.display = 'none'; 
             }
         }
         
@@ -565,33 +518,21 @@
 
         document.getElementById('settingsForm').addEventListener('submit', function(e) {
             e.preventDefault(); 
-
             Swal.fire({
                 title: 'กำลังบันทึกข้อมูล...',
-                text: 'โปรดรอสักครู่',
                 allowOutsideClick: false,
-                color: '#2c3e50',
-                confirmButtonColor: '#1DB446',
-                didOpen: () => {
-                    Swal.showLoading()
-                }
+                didOpen: () => Swal.showLoading()
             });
 
-            // จำลองการโหลดบันทึก
             setTimeout(() => {
                 Swal.fire({
                     icon: 'success',
                     title: 'บันทึกสำเร็จ!',
-                    text: 'ข้อมูลการตั้งค่าของคุณถูกอัปเดตแล้ว',
-                    confirmButtonColor: '#1DB446',
-                    confirmButtonText: 'ตกลง'
+                    confirmButtonColor: '#1DB446'
                 }).then(() => {
-                    // หากอยู่ในแอป LINE ให้ปิดหน้าต่าง
-                    if (typeof liff !== 'undefined' && liff.isInClient()) {
-                        liff.closeWindow();
-                    }
+                    if (typeof liff !== 'undefined' && liff.isInClient()) liff.closeWindow();
                 });
-            }, 1800); 
+            }, 1200); 
         });
     </script>
 </body>
