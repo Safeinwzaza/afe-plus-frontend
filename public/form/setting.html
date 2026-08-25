@@ -145,7 +145,7 @@
             align-items: center;
             font-size: 1.05rem;
             font-weight: 500;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
         }
 
         .value-badge {
@@ -156,6 +156,40 @@
             font-weight: 600;
             font-size: 1rem;
             transition: all 0.3s ease;
+        }
+
+        /* Recommendation Banner inside Form Group */
+        .default-recommend-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .recommend-text {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        .recommend-text b {
+            color: #0f172a;
+        }
+
+        .btn-preset {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-preset:active {
+            background: #e2e8f0;
+            transform: scale(0.96);
         }
 
         .control-layout {
@@ -289,7 +323,7 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- Dynamic Card Styling (Shared) --- */
+        /* Status Card */
         .status-card {
             background: #f0fff4;
             border: 1px solid #c6f6d5;
@@ -321,7 +355,6 @@
             line-height: 1.45;
         }
 
-        /* Animation หัวใจเต้น */
         .pulse-anim {
             animation: heartbeat 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
         }
@@ -332,26 +365,22 @@
             50% { transform: scale(0.95); }
         }
 
-        /* --- Dynamic Themes --- */
-        /* โทนส้ม/เหลือง (เฝ้าระวัง) */
+        /* Themes */
         .theme-warning .status-card { background: #fffbeb; border-color: #fef08a; }
         .theme-warning .advice-text h4 { color: #d97706; }
         .theme-warning .value-badge { background: #fffbeb !important; color: #d97706 !important; }
         .theme-warning input[type=range]::-webkit-slider-thumb { border-color: #d97706 !important; }
 
-        /* โทนแดง (ไข้ / เร็วอันตราย) */
         .theme-danger .status-card { background: #fff5f5; border-color: #fed7d7; }
         .theme-danger .advice-text h4 { color: #e53e3e; }
         .theme-danger .value-badge { background: #fff5f5 !important; color: #e53e3e !important; }
         .theme-danger input[type=range]::-webkit-slider-thumb { border-color: #e53e3e !important; }
 
-        /* โทนฟ้า (เย็น / ช้าอันตราย) */
         .theme-cool .status-card { background: #ebf8ff; border-color: #bee3f8; }
         .theme-cool .advice-text h4 { color: #3182ce; }
         .theme-cool .value-badge { background: #ebf8ff !important; color: #3182ce !important; }
         .theme-cool input[type=range]::-webkit-slider-thumb { border-color: #3182ce !important; }
 
-        /* Responsive Desktop/Tablet */
         @media (min-width: 768px) {
             .main-layout { flex-direction: row; }
             .tabs-container {
@@ -415,6 +444,10 @@
                             ระดับที่ 1: แจ้งเตือนปกติ
                             <span class="value-badge"><span id="val_zone1">20</span> m</span>
                         </label>
+                        <div class="default-recommend-row">
+                            <span class="recommend-text">ค่าเริ่มต้นแนะนำ: <b>20 เมตร</b> (ครอบคลุมในบริเวณบ้าน)</span>
+                            <button type="button" class="btn-preset" onclick="setPreset('zone1', 20)">ใช้ค่าแนะนำ</button>
+                        </div>
                         <div class="control-layout">
                             <input type="range" id="zone1_slider" min="1" max="100" step="1" value="20" oninput="updateValue('zone1', this.value)">
                             <div class="stepper-wrapper">
@@ -431,6 +464,10 @@
                             ระดับที่ 2: แจ้งเตือนฉุกเฉิน
                             <span class="value-badge"><span id="val_zone2">50</span> m</span>
                         </label>
+                        <div class="default-recommend-row">
+                            <span class="recommend-text">ค่าเริ่มต้นแนะนำ: <b>50 เมตร</b> (บริเวณรอบนอก/ชุมชน)</span>
+                            <button type="button" class="btn-preset" onclick="setPreset('zone2', 50)">ใช้ค่าแนะนำ</button>
+                        </div>
                         <div class="control-layout">
                             <input type="range" id="zone2_slider" min="10" max="500" step="5" value="50" oninput="updateValue('zone2', this.value)">
                             <div class="stepper-wrapper">
@@ -459,13 +496,17 @@
                         <div class="form-group">
                             <label class="form-label">
                                 แจ้งเตือนเมื่ออุณหภูมิสูงกว่า
-                                <span class="value-badge" id="badge-tempAlert"><span id="val_tempAlert">38.0</span> °C</span>
+                                <span class="value-badge" id="badge-tempAlert"><span id="val_tempAlert">37.8</span> °C</span>
                             </label>
+                            <div class="default-recommend-row">
+                                <span class="recommend-text">ค่าเริ่มต้นแนะนำ: <b>37.8 °C</b> (เกณฑ์เริ่มมีไข้ต่ำในผู้สูงอายุ)</span>
+                                <button type="button" class="btn-preset" onclick="setPreset('tempAlert', 37.8)">ใช้ค่าแนะนำ</button>
+                            </div>
                             <div class="control-layout">
-                                <input type="range" id="tempAlert_slider" min="35" max="42" step="0.1" value="38.0" oninput="updateValue('tempAlert', this.value)">
+                                <input type="range" id="tempAlert_slider" min="35" max="42" step="0.1" value="37.8" oninput="updateValue('tempAlert', this.value)">
                                 <div class="stepper-wrapper">
                                     <button type="button" class="btn-step" onclick="stepValue('tempAlert', -0.1)" id="btn_tempAlert_minus">-</button>
-                                    <input type="number" id="tempAlert_input" class="form-control-number" min="35" max="42" step="0.1" value="38.0" onchange="updateValue('tempAlert', this.value)">
+                                    <input type="number" id="tempAlert_input" class="form-control-number" min="35" max="42" step="0.1" value="37.8" onchange="updateValue('tempAlert', this.value)">
                                     <button type="button" class="btn-step" onclick="stepValue('tempAlert', 0.1)" id="btn_tempAlert_plus">+</button>
                                 </div>
                             </div>
@@ -490,13 +531,17 @@
                         <div class="form-group">
                             <label class="form-label">
                                 ชีพจรแจ้งเตือน (สูงสุด)
-                                <span class="value-badge" id="badge-pulseMax"><span id="val_pulseMax">120</span> bpm</span>
+                                <span class="value-badge" id="badge-pulseMax"><span id="val_pulseMax">110</span> bpm</span>
                             </label>
+                            <div class="default-recommend-row">
+                                <span class="recommend-text">ค่าเริ่มต้นแนะนำ: <b>110 bpm</b> (จุดเฝ้าระวังขณะทำกิจกรรม)</span>
+                                <button type="button" class="btn-preset" onclick="setPreset('pulseMax', 110)">ใช้ค่าแนะนำ</button>
+                            </div>
                             <div class="control-layout">
-                                <input type="range" id="pulseMax_slider" min="60" max="200" step="1" value="120" oninput="updateValue('pulseMax', this.value)">
+                                <input type="range" id="pulseMax_slider" min="60" max="200" step="1" value="110" oninput="updateValue('pulseMax', this.value)">
                                 <div class="stepper-wrapper">
                                     <button type="button" class="btn-step" onclick="stepValue('pulseMax', -1)" id="btn_pulseMax_minus">-</button>
-                                    <input type="number" id="pulseMax_input" class="form-control-number" min="60" max="200" value="120" onchange="updateValue('pulseMax', this.value)">
+                                    <input type="number" id="pulseMax_input" class="form-control-number" min="60" max="200" value="110" onchange="updateValue('pulseMax', this.value)">
                                     <button type="button" class="btn-step" onclick="stepValue('pulseMax', 1)" id="btn_pulseMax_plus">+</button>
                                 </div>
                             </div>
@@ -518,13 +563,17 @@
                         <div class="form-group">
                             <label class="form-label">
                                 ชีพจรแจ้งเตือน (ต่ำสุด)
-                                <span class="value-badge" id="badge-pulseMin"><span id="val_pulseMin">50</span> bpm</span>
+                                <span class="value-badge" id="badge-pulseMin"><span id="val_pulseMin">55</span> bpm</span>
                             </label>
+                            <div class="default-recommend-row">
+                                <span class="recommend-text">ค่าเริ่มต้นแนะนำ: <b>55 bpm</b> (จุดเฝ้าระวังช่วงพักผ่อน/หลับสนิท)</span>
+                                <button type="button" class="btn-preset" onclick="setPreset('pulseMin', 55)">ใช้ค่าแนะนำ</button>
+                            </div>
                             <div class="control-layout">
-                                <input type="range" id="pulseMin_slider" min="30" max="100" step="1" value="50" oninput="updateValue('pulseMin', this.value)">
+                                <input type="range" id="pulseMin_slider" min="30" max="100" step="1" value="55" oninput="updateValue('pulseMin', this.value)">
                                 <div class="stepper-wrapper">
                                     <button type="button" class="btn-step" onclick="stepValue('pulseMin', -1)" id="btn_pulseMin_minus">-</button>
-                                    <input type="number" id="pulseMin_input" class="form-control-number" min="30" max="100" value="50" onchange="updateValue('pulseMin', this.value)">
+                                    <input type="number" id="pulseMin_input" class="form-control-number" min="30" max="100" value="55" onchange="updateValue('pulseMin', this.value)">
                                     <button type="button" class="btn-step" onclick="stepValue('pulseMin', 1)" id="btn_pulseMin_plus">+</button>
                                 </div>
                             </div>
@@ -542,7 +591,12 @@
     </main>
 
     <script>
-        // Core Value Manager พร้อมระบบเปลี่ยน Theme & Advice อัตโนมัติ
+        // ฟังก์ชันตั้งค่ากลับเป็นค่าเริ่มต้นแนะนำ
+        function setPreset(id, value) {
+            updateValue(id, value);
+        }
+
+        // Core Value Manager
         function updateValue(id, value) {
             const input = document.getElementById(`${id}_input`);
             const slider = document.getElementById(`${id}_slider`);
@@ -564,9 +618,7 @@
             document.getElementById(`btn_${id}_minus`).disabled = (numVal <= min);
             document.getElementById(`btn_${id}_plus`).disabled = (numVal >= max);
 
-            // ==========================================
-            // อัปเดตคำแนะนำและ Theme: อุณหภูมิ
-            // ==========================================
+            // อัปเดตอุณหภูมิ
             if (id === 'tempAlert') {
                 const group = document.getElementById('group-tempAlert');
                 const title = document.getElementById('temp-advice-title');
@@ -597,9 +649,7 @@
                 }
             }
 
-            // ==========================================
-            // อัปเดตคำแนะนำและ Theme: ชีพจรสูงสุด
-            // ==========================================
+            // อัปเดตชีพจรสูงสุด
             if (id === 'pulseMax') {
                 const group = document.getElementById('group-pulseMax');
                 const title = document.getElementById('pulse-max-title');
@@ -628,9 +678,7 @@
                 }
             }
 
-            // ==========================================
-            // อัปเดตคำแนะนำและ Theme: ชีพจรต่ำสุด
-            // ==========================================
+            // อัปเดตชีพจรต่ำสุด
             if (id === 'pulseMin') {
                 const group = document.getElementById('group-pulseMin');
                 const title = document.getElementById('pulse-min-title');
@@ -684,7 +732,6 @@
             const page = urlParams.get('page') || 'security';
             if (document.getElementById(page)) openTab(page);
 
-            // Trigger Initial State
             ['zone1', 'zone2', 'tempAlert', 'pulseMax', 'pulseMin'].forEach(id => {
                 const el = document.getElementById(`${id}_input`);
                 if (el) updateValue(id, el.value);
