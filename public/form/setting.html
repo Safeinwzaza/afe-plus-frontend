@@ -379,6 +379,67 @@
     border-color: var(--dynamic-color);
     transition: border-color 0.4s ease;
 }
+/* --- ส่วนเสริมสำหรับหน้าชีพจร (Dynamic UI & Animation) --- */
+
+/* โครงสร้าง Card */
+.pulse-status-card {
+    background: #f0fff4; /* สีเขียวปกติ */
+    border: 1px solid #c6f6d5;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    transition: all 0.4s ease;
+}
+
+.pulse-icon-wrapper {
+    font-size: 2.8rem;
+    transition: all 0.4s ease;
+    /* แอนิเมชันหัวใจเต้น ค่าเริ่มต้นที่ 1.2 วินาที */
+    animation: heartbeat 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(0.95); }
+    5%, 25% { transform: scale(1.1); }
+    15% { transform: scale(1.2); }
+    50% { transform: scale(0.95); }
+}
+
+.pulse-advice-text h4 {
+    color: #2f855a; /* สีเขียวปกติ */
+    font-size: 1.15rem;
+    margin-bottom: 4px;
+    transition: color 0.4s ease;
+}
+
+.pulse-advice-text p {
+    color: #4a5568;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+/* Theme: หัวใจเต้นเร็ว (Max High) */
+.pulse-max-danger .pulse-status-card {
+    background: #fff5f5;
+    border-color: #fed7d7;
+}
+.pulse-max-danger .pulse-icon-wrapper { filter: drop-shadow(0 2px 6px rgba(229,62,62,0.3)); }
+.pulse-max-danger .pulse-advice-text h4 { color: #e53e3e; }
+.pulse-max-danger .value-badge { background: #fff5f5 !important; color: #e53e3e !important; }
+.pulse-max-danger input[type=range]::-webkit-slider-thumb { border-color: #e53e3e !important; }
+
+/* Theme: หัวใจเต้นช้า (Min Low) */
+.pulse-min-danger .pulse-status-card {
+    background: #ebf8ff;
+    border-color: #bee3f8;
+}
+.pulse-min-danger .pulse-icon-wrapper { filter: drop-shadow(0 2px 6px rgba(49,130,206,0.3)); }
+.pulse-min-danger .pulse-advice-text h4 { color: #3182ce; }
+.pulse-min-danger .value-badge { background: #ebf8ff !important; color: #3182ce !important; }
+.pulse-min-danger input[type=range]::-webkit-slider-thumb { border-color: #3182ce !important; }
     </style>
 </head>
 <body>
@@ -476,39 +537,64 @@
         </div>
     </div>
 </div>
-
-                <!-- แท็บชีพจร -->
-                <div class="form-container" id="pulse" role="tabpanel">
-                    <h3 class="form-section-title">ตั้งค่าอัตราการเต้นของหัวใจ</h3>
-                    <div class="form-group">
-                        <label class="form-label">
-                            ชีพจรแจ้งเตือน (สูงสุด)
-                            <span class="value-badge"><span id="val_pulseMax">150</span> bpm</span>
-                        </label>
-                        <div class="control-layout">
-                            <input type="range" id="pulseMax_slider" min="60" max="200" step="1" value="150" oninput="updateValue('pulseMax', this.value)">
-                            <div class="stepper-wrapper">
-                                <button type="button" class="btn-step" onclick="stepValue('pulseMax', -1)" id="btn_pulseMax_minus">-</button>
-                                <input type="number" id="pulseMax_input" class="form-control-number" min="60" max="200" value="150" onchange="updateValue('pulseMax', this.value)">
-                                <button type="button" class="btn-step" onclick="stepValue('pulseMax', 1)" id="btn_pulseMax_plus">+</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">
-                            ชีพจรแจ้งเตือน (ต่ำสุด)
-                            <span class="value-badge"><span id="val_pulseMin">50</span> bpm</span>
-                        </label>
-                        <div class="control-layout">
-                            <input type="range" id="pulseMin_slider" min="30" max="100" step="1" value="50" oninput="updateValue('pulseMin', this.value)">
-                            <div class="stepper-wrapper">
-                                <button type="button" class="btn-step" onclick="stepValue('pulseMin', -1)" id="btn_pulseMin_minus">-</button>
-                                <input type="number" id="pulseMin_input" class="form-control-number" min="30" max="100" value="50" onchange="updateValue('pulseMin', this.value)">
-                                <button type="button" class="btn-step" onclick="stepValue('pulseMin', 1)" id="btn_pulseMin_plus">+</button>
-                            </div>
-                        </div>
-                    </div>
+<!-- แท็บชีพจร -->
+<div class="form-container" id="pulse" role="tabpanel">
+    <h3 class="form-section-title">ตั้งค่าอัตราการเต้นของหัวใจ</h3>
+    
+    <!-- กลุ่มตั้งค่า: ชีพจรสูงสุด -->
+    <div id="group-pulseMax" class="pulse-group-wrapper">
+        <div class="pulse-status-card" id="pulse-max-card">
+            <div class="pulse-icon-wrapper" id="pulse-max-icon">💓</div>
+            <div class="pulse-advice-text">
+                <h4 id="pulse-max-title">ระดับการเตือนสูงสุด</h4>
+                <p id="pulse-max-desc">เกณฑ์ที่ตั้งไว้อยู่ในระดับมาตรฐานที่เหมาะสมกับการทำกิจกรรมทั่วไป</p>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">
+                ชีพจรแจ้งเตือน (สูงสุด)
+                <span class="value-badge" id="badge-pulseMax"><span id="val_pulseMax">150</span> bpm</span>
+            </label>
+            <div class="control-layout">
+                <input type="range" id="pulseMax_slider" min="60" max="200" step="1" value="150" oninput="updateValue('pulseMax', this.value)">
+                <div class="stepper-wrapper">
+                    <button type="button" class="btn-step" onclick="stepValue('pulseMax', -1)" id="btn_pulseMax_minus">-</button>
+                    <input type="number" id="pulseMax_input" class="form-control-number" min="60" max="200" value="150" onchange="updateValue('pulseMax', this.value)">
+                    <button type="button" class="btn-step" onclick="stepValue('pulseMax', 1)" id="btn_pulseMax_plus">+</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <hr style="border: none; border-top: 1px dashed #e2e8f0; margin: 30px 0;">
+
+    <!-- กลุ่มตั้งค่า: ชีพจรต่ำสุด -->
+    <div id="group-pulseMin" class="pulse-group-wrapper">
+        <div class="pulse-status-card" id="pulse-min-card">
+            <div class="pulse-icon-wrapper" id="pulse-min-icon">💚</div>
+            <div class="pulse-advice-text">
+                <h4 id="pulse-min-title">ระดับการเตือนต่ำสุด</h4>
+                <p id="pulse-min-desc">เกณฑ์ความปลอดภัยขณะพักผ่อนหรือนอนหลับอยู่ในระดับมาตรฐาน</p>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">
+                ชีพจรแจ้งเตือน (ต่ำสุด)
+                <span class="value-badge" id="badge-pulseMin"><span id="val_pulseMin">50</span> bpm</span>
+            </label>
+            <div class="control-layout">
+                <input type="range" id="pulseMin_slider" min="30" max="100" step="1" value="50" oninput="updateValue('pulseMin', this.value)">
+                <div class="stepper-wrapper">
+                    <button type="button" class="btn-step" onclick="stepValue('pulseMin', -1)" id="btn_pulseMin_minus">-</button>
+                    <input type="number" id="pulseMin_input" class="form-control-number" min="30" max="100" value="50" onchange="updateValue('pulseMin', this.value)">
+                    <button type="button" class="btn-step" onclick="stepValue('pulseMin', 1)" id="btn_pulseMin_plus">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
                 <div class="submit-container">
                     <button type="submit" class="btn-submit">
@@ -629,6 +715,50 @@ if (id === 'tempAlert') {
         iconWrapper.innerHTML = '🌡️'; // สลับกลับเป็นไอคอนปกติ
         adviceTitle.innerText = 'เฝ้าระวังอุณหภูมิปกติ';
         adviceDesc.innerText = 'เกณฑ์ปกติของผู้สูงอายุจะอยู่ที่ 36.0 - 37.2 °C การตั้งระดับนี้ช่วยให้ระบบจับความผิดปกติได้ไวที่สุด';
+    }
+}
+// เงื่อนไขสำหรับแท็บชีพจร
+if (id === 'pulseMax') {
+    const group = document.getElementById('group-pulseMax');
+    const title = document.getElementById('pulse-max-title');
+    const desc = document.getElementById('pulse-max-desc');
+    const icon = document.getElementById('pulse-max-icon');
+
+    // เกณฑ์: ถ้าตั้งเตือนสูงสุดไว้ที่ 110 ครั้ง/นาที ขึ้นไป (เกณฑ์ Tachycardia)
+    if (numVal >= 110) {
+        group.classList.add('pulse-max-danger');
+        icon.innerHTML = '❤️‍🔥';
+        icon.style.animationDuration = '0.6s'; // หัวใจเต้นเร็วมาก
+        title.innerText = 'เฝ้าระวังหัวใจเต้นเร็วผิดปกติ';
+        desc.innerText = `เตือนเมื่อชีพจรสูงกว่า ${numVal} ครั้ง/นาที (อาจเสี่ยงต่อภาวะใจสั่น หรือเหนื่อยหอบรุนแรง)`;
+    } else {
+        group.classList.remove('pulse-max-danger');
+        icon.innerHTML = '💓';
+        icon.style.animationDuration = '1.2s'; // หัวใจเต้นปกติ
+        title.innerText = 'ระดับการเตือนสูงสุด: ปกติ';
+        desc.innerText = 'เกณฑ์ที่ตั้งไว้อยู่ในระดับมาตรฐานที่เหมาะสมกับการทำกิจกรรมทั่วไป';
+    }
+}
+
+if (id === 'pulseMin') {
+    const group = document.getElementById('group-pulseMin');
+    const title = document.getElementById('pulse-min-title');
+    const desc = document.getElementById('pulse-min-desc');
+    const icon = document.getElementById('pulse-min-icon');
+
+    // เกณฑ์: ถ้าตั้งเตือนต่ำสุดไว้ที่ 55 ครั้ง/นาที หรือต่ำกว่า (เกณฑ์ Bradycardia)
+    if (numVal <= 55) {
+        group.classList.add('pulse-min-danger');
+        icon.innerHTML = '🫀';
+        icon.style.animationDuration = '2.5s'; // หัวใจเต้นช้ามาก
+        title.innerText = 'เฝ้าระวังหัวใจเต้นช้าผิดปกติ';
+        desc.innerText = `เตือนเมื่อชีพจรต่ำกว่า ${numVal} ครั้ง/นาที (อาจเสี่ยงต่อภาวะเลือดไปเลี้ยงสมองไม่พอ หรือหน้ามืด)`;
+    } else {
+        group.classList.remove('pulse-min-danger');
+        icon.innerHTML = '💚';
+        icon.style.animationDuration = '1.2s'; // หัวใจเต้นปกติ
+        title.innerText = 'ระดับการเตือนต่ำสุด: ปกติ';
+        desc.innerText = 'เกณฑ์ความปลอดภัยขณะพักผ่อนหรือนอนหลับอยู่ในระดับมาตรฐาน';
     }
 }
     </script>
