@@ -513,49 +513,77 @@
             <form id="settingsForm">
                 
                 <!-- แท็บเขตปลอดภัย -->
-                <div class="form-container active" id="security" role="tabpanel">
-                    <h3 class="form-section-title">ตั้งค่าเขตปลอดภัย (Geofence)</h3>
-                    
-                    <div class="form-group">
-                        <label class="form-label">
-                            ระดับที่ 1: แจ้งเตือนปกติ
-                            <span class="value-badge"><span id="val_zone1">20</span> m</span>
-                        </label>
-                        <div class="default-recommend-row">
-                            <span class="recommend-text">ค่าเริ่มต้นแนะนำ: <b>20 เมตร</b> (ครอบคลุมในบริเวณบ้าน)</span>
-                            <button type="button" class="btn-preset" onclick="setPreset('zone1', 20)">ใช้ค่าแนะนำ</button>
-                        </div>
-                        <div class="control-layout">
-                            <input type="range" id="zone1_slider" min="1" max="100" step="1" value="20" oninput="updateValue('zone1', this.value)">
-                            <div class="stepper-wrapper">
-                                <button type="button" class="btn-step" onclick="stepValue('zone1', -1)" id="btn_zone1_minus">-</button>
-                                <input type="number" id="zone1_input" class="form-control-number" min="1" max="100" value="20" onchange="updateValue('zone1', this.value)">
-                                <button type="button" class="btn-step" onclick="stepValue('zone1', 1)" id="btn_zone1_plus">+</button>
-                            </div>
-                        </div>
-                        <span class="hint">ⓘ รัศมีขั้นต้น หากออกนอกบริเวณนี้ระบบจะเตือน (สีส้ม)</span>
-                    </div>
+<div class="form-container active" id="security" role="tabpanel">
+    <h3 class="form-section-title">ตั้งค่าเขตปลอดภัย (Geofence)</h3>
+    
+    <!-- ปุ่มเลือกพรีเซ็ตตามขนาดสถานที่ -->
+    <div style="margin-bottom: 20px;">
+        <label style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 8px; display: block;">เลือกตามลักษณะที่พักอาศัยด่วน:</label>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+            <button type="button" class="btn-preset" style="padding: 8px 4px; text-align: center;" onclick="setZonePreset(15, 50)">🏢 คอนโด/หอพัก</button>
+            <button type="button" class="btn-preset" style="padding: 8px 4px; text-align: center;" onclick="setZonePreset(25, 80)">🏡 บ้านเดี่ยว/ทาวน์โฮม</button>
+            <button type="button" class="btn-preset" style="padding: 8px 4px; text-align: center;" onclick="setZonePreset(50, 150)">🌳 บ้านสวน/พื้นที่กว้าง</button>
+        </div>
+    </div>
 
-                    <div class="form-group">
-                        <label class="form-label">
-                            ระดับที่ 2: แจ้งเตือนฉุกเฉิน
-                            <span class="value-badge"><span id="val_zone2">50</span> m</span>
-                        </label>
-                        <div class="default-recommend-row">
-                            <span class="recommend-text">ค่าเริ่มต้นแนะนำ: <b>50 เมตร</b> (บริเวณรอบนอก/ชุมชน)</span>
-                            <button type="button" class="btn-preset" onclick="setPreset('zone2', 50)">ใช้ค่าแนะนำ</button>
-                        </div>
-                        <div class="control-layout">
-                            <input type="range" id="zone2_slider" min="10" max="500" step="5" value="50" oninput="updateValue('zone2', this.value)">
-                            <div class="stepper-wrapper">
-                                <button type="button" class="btn-step" onclick="stepValue('zone2', -5)" id="btn_zone2_minus">-</button>
-                                <input type="number" id="zone2_input" class="form-control-number" min="10" max="500" value="50" onchange="updateValue('zone2', this.value)">
-                                <button type="button" class="btn-step" onclick="stepValue('zone2', 5)" id="btn_zone2_plus">+</button>
-                            </div>
-                        </div>
-                        <span class="hint">ⓘ รัศมีอันตราย หากออกนอกบริเวณนี้ระบบจะเตือนทันที (สีแดง)</span>
-                    </div>
-                </div>
+    <!-- เขตปลอดภัยระดับ 1 -->
+    <div class="form-group" id="group-zone1">
+        <div class="status-card" style="padding: 14px; margin-bottom: 12px; background: #fffbeb; border-color: #fef08a;">
+            <div class="status-icon" style="font-size: 2rem;">🏠</div>
+            <div class="advice-text">
+                <h4 style="color: #d97706; font-size: 1rem;" id="zone1-title">เขตที่ 1: เฝ้าระวัง (สีส้ม)</h4>
+                <p id="zone1-desc" style="font-size: 0.88rem;">ระยะครอบคลุมบริเวณตัวบ้านและรั้วบ้าน</p>
+            </div>
+        </div>
+
+        <label class="form-label">
+            รัศมีระดับที่ 1
+            <span class="value-badge" id="badge-zone1" style="background: #fffbeb; color: #d97706;"><span id="val_zone1">25</span> m</span>
+        </label>
+        <div class="default-recommend-row">
+            <span class="recommend-text">ค่าแนะนำ: <b>25 เมตร</b> (ลดปัญหา GPS ในบ้านคลาดเคลื่อน)</span>
+            <button type="button" class="btn-preset" onclick="setPreset('zone1', 25)">ใช้ค่าแนะนำ</button>
+        </div>
+        <div class="control-layout">
+            <input type="range" id="zone1_slider" min="10" max="150" step="5" value="25" oninput="updateValue('zone1', this.value)">
+            <div class="stepper-wrapper">
+                <button type="button" class="btn-step" onclick="stepValue('zone1', -5)" id="btn_zone1_minus">-</button>
+                <input type="number" id="zone1_input" class="form-control-number" min="10" max="150" step="5" value="25" onchange="updateValue('zone1', this.value)">
+                <button type="button" class="btn-step" onclick="stepValue('zone1', 5)" id="btn_zone1_plus">+</button>
+            </div>
+        </div>
+        <span class="hint">ⓘ แจ้งเตือนเมื่อก้าวพ้นรั้วบ้าน เพื่อให้ผู้ดูแลรับรู้การเคลื่อนไหว</span>
+    </div>
+
+    <!-- เขตปลอดภัยระดับ 2 -->
+    <div class="form-group" id="group-zone2">
+        <div class="status-card" style="padding: 14px; margin-bottom: 12px; background: #fff5f5; border-color: #fed7d7;">
+            <div class="status-icon" style="font-size: 2rem;">🚨</div>
+            <div class="advice-text">
+                <h4 style="color: #e53e3e; font-size: 1rem;" id="zone2-title">เขตที่ 2: ฉุกเฉิน (สีแดง)</h4>
+                <p id="zone2-desc" style="font-size: 0.88rem;">ระยะออกนอกซอย หรือเริ่มเข้าสู่ถนนใหญ่</p>
+            </div>
+        </div>
+
+        <label class="form-label">
+            รัศมีระดับที่ 2
+            <span class="value-badge" id="badge-zone2" style="background: #fff5f5; color: #e53e3e;"><span id="val_zone2">80</span> m</span>
+        </label>
+        <div class="default-recommend-row">
+            <span class="recommend-text">ค่าแนะนำ: <b>80 เมตร</b> (จุดตัดเข้าสู่พื้นที่สาธารณะ)</span>
+            <button type="button" class="btn-preset" onclick="setPreset('zone2', 80)">ใช้ค่าแนะนำ</button>
+        </div>
+        <div class="control-layout">
+            <input type="range" id="zone2_slider" min="30" max="500" step="10" value="80" oninput="updateValue('zone2', this.value)">
+            <div class="stepper-wrapper">
+                <button type="button" class="btn-step" onclick="stepValue('zone2', -10)" id="btn_zone2_minus">-</button>
+                <input type="number" id="zone2_input" class="form-control-number" min="30" max="500" step="10" value="80" onchange="updateValue('zone2', this.value)">
+                <button type="button" class="btn-step" onclick="stepValue('zone2', 10)" id="btn_zone2_plus">+</button>
+            </div>
+        </div>
+        <span class="hint">ⓘ แจ้งเตือนฉุกเฉินทันทีเมื่อออกห่างจากบ้านเกินระยะปลอดภัย</span>
+    </div>
+</div>
 
                 <!-- แท็บอุณหภูมิ -->
                 <div class="form-container" id="temp" role="tabpanel">
@@ -900,6 +928,41 @@
                 });
             }, 1200); 
         });
+        // ฟังก์ชันตั้งค่าเขตปลอดภัยตามขนาดสถานที่
+function setZonePreset(z1, z2) {
+    updateValue('zone1', z1);
+    updateValue('zone2', z2);
+}
+
+// เพิ่มเงื่อนไขตรวจสอบ Zone ในฟังก์ชัน updateValue(id, value)
+if (id === 'zone1') {
+    const desc1 = document.getElementById('zone1-desc');
+    const z2Input = document.getElementById('zone2_input');
+    
+    // คำแนะนำตามระยะจริง
+    if (numVal <= 15) desc1.innerText = 'ระยะแคบ (ห้องพัก/คอนโด อาจมีแจ้งเตือนผิดพลาดจาก GPS แกว่งได้)';
+    else if (numVal <= 35) desc1.innerText = 'ระยะมาตรฐาน ครอบคลุมตัวบ้าน สวน และแนวรั้วบ้าน';
+    else desc1.innerText = 'ระยะกว้าง เหมาะสำหรับบ้านสวน หรือพื้นที่เกษตรกรรม';
+
+    // Auto-fix: ถ้าเขต 1 ตั้งมากกว่าหรือเท่ากับเขต 2 ให้ขยายเขต 2 ขึ้นไป
+    if (numVal >= parseFloat(z2Input.value)) {
+        updateValue('zone2', numVal + 20);
+    }
+}
+
+if (id === 'zone2') {
+    const desc2 = document.getElementById('zone2-desc');
+    const z1Input = document.getElementById('zone1_input');
+
+    if (numVal <= 60) desc2.innerText = 'ระยะปากซอยสั้น หรือเพื่อนบ้านหลังใกล้เคียง';
+    else if (numVal <= 120) desc2.innerText = 'ระยะถนนหลักหน้าซอย หรือละแวกหมู่บ้าน';
+    else desc2.innerText = 'ระยะนอกชุมชน เสี่ยงต่อการพลัดหลงสูง';
+
+    // Auto-fix: ถ้าเขต 2 ตั้งน้อยกว่าหรือเท่ากับเขต 1 ให้ลดเขต 1 ลงมา
+    if (numVal <= parseFloat(z1Input.value)) {
+        updateValue('zone1', Math.max(10, numVal - 20));
+    }
+}
     </script>
 </body>
 </html>
